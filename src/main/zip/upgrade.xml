@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin-upgrade xmlns="http://www.urbancode.com/UpgradeXMLSchema_v1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<migrate to-version="2">
+		<migrate-command name="Docker Compose Down" />
+	</migrate>
+
+	<migrate to-version="3">
+		<migrate-command name="Docker Compose Up" />
+		<migrate-command name="Docker Compose Down" />
+		<migrate-command name="Docker Compose Config" />
+		<migrate-command name="Docker Compose (Generic)" />
+		<migrate-command name="Create Compose Overrides" />
+	</migrate>
+
+	<migrate to-version="4">
+		<migrate-command name="Docker Compose Up" />
+		<migrate-command name="Docker Compose Down" />
+		<migrate-command name="Docker Compose Config" />
+		<migrate-command name="Docker Compose (Generic)" />
+		<migrate-command name="Create Compose Overrides" />
+	</migrate>
+
+</plugin-upgrade>

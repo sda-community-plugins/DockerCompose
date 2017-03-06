@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pluginInfo>
+    <author>
+        <name>Serena Software</name>
+        <email>info@serena.com</email>
+        <website>http://www.serena.com/index.php/en/</website>
+    </author>
+    <licenses>
+        <license></license>
+    </licenses>
+    <integrationType>Deploy</integrationType>
+    <categories>
+        <category>Configuration Management</category>
+    </categories>
+    <versions>
+        <version name="4">
+            <releaseNote>
+                Installing this plugin will give you access to tasks for integrating with Docker Compose.
+            </releaseNote>
+        </version>
+    </versions>
+</pluginInfo>
