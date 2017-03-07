@@ -11,10 +11,13 @@ final workdir = new File('.')
 
 final composeFiles = props['composeFiles']?.trim()
 final composeProjectName = props['composeProjectName']?.trim()
+final serviceName = props['serviceName']?.trim()
+final outputFile = props['outputFile']?.trim()
 final composeOptions = props['composeOptions']?.trim()
-final scriptPaths = props["scriptPaths"]?.trim()
 final commandPath = props['commandPath']?:"docker-compose"
 final envPropValues = props["envPropValues"]?.trim()
+final showTimestamps = props["showTimestamps"]?.trim().toBoolean()
+final logLines = props["logLines"]?.trim()
 final saveScript = props["saveScript"]?.trim()
 final verbose = props["verbose"]?.trim().toBoolean()
 final debug = props["debug"]?.trim().toBoolean()
@@ -22,10 +25,13 @@ final debug = props["debug"]?.trim().toBoolean()
 if (debug) {
     DockerUtils.debug("composeFiles=${composeFiles}")
     DockerUtils.debug("composeProjectName=${composeProjectName}")
+    DockerUtils.debug("serviceName=${serviceName}")
+    DockerUtils.debug("outputFile=${outputFile}")
     DockerUtils.debug("composeOptions=${composeOptions}")
-    DockerUtils.debug("scriptPaths=${scriptPaths}")
     DockerUtils.debug("commandPath=${commandPath}")
     DockerUtils.debug("envPropValues=${envPropValues}")
+    DockerUtils.debug("showTimestamps=${showTimestamps}")
+    DockerUtils.debug("logLines=${logLines}")
 }
 
 Yaml yaml = new Yaml()
@@ -36,7 +42,7 @@ def composeFilePaths = DockerUtils.toTrimmedList(composeFiles, '\n')
 if (!composeFilePaths) {
     composeFilePaths << 'docker-compose.yml'
 }
-def allServiceList = []
+def serviceList = []
 composeFilePaths.each { path ->
     def composeFile = new File(path)
     if (!composeFile.exists()) {
@@ -51,32 +57,16 @@ composeFilePaths.each { path ->
             DockerUtils.info("Found compose file format version ${composeFileFormat}")
             serviceList = composeYml.services
             DockerUtils.info("Found services: ${serviceList}")
-            allServiceList.add(serviceList)
         }
     }
     catch (MissingPropertyException e) {
         DockerUtils.info("Found compose file format version 1")
         serviceList = composeYml
         DockerUtils.info("Found services: ${serviceList}")
-        allServiceList.add(serviceList)
     }
 }
 
-DockerUtils.info("Found all services: ${allServiceList}")
-
-serviceList.each { service ->
-    // add overrides for each service (if file exists)
-    def overridesFiles = new File(".." + File.separatorChar + service.key +
-            File.separatorChar + service.key + "-overrides.yml")
-    if (!overridesFiles.exists()) {
-        DockerUtils.info("Could not find compose overrides file, ${overridesFiles.path}, ignoring...")
-    } else {
-        DockerUtils.info("Adding overrides file: ${overridesFiles.path}")
-        composeFilePaths << "${overridesFiles.path}"
-    }
-}
-
-// compose up arguments
+// compose config arguments
 final String DOCKER_COMPOSE = DockerUtils.findDockerComposeExecutable(commandPath)
 List<String> composeArgs = [DOCKER_COMPOSE]
 if (composeOptions) {
@@ -90,8 +80,22 @@ composeFilePaths.each { path ->
     composeArgs << '-f'
     composeArgs << path
 }
-composeArgs << 'up'
-composeArgs << '-d'
+
+composeArgs << 'logs'
+
+if (showTimestamps) {
+    composeArgs << '-t'
+}
+if (logLines && logLines != "all") {
+    composeArgs << '--tail="' + logLines + '"'
+}
+
+composeArgs << serviceName
+
+if (outputFile) {
+    composeArgs << '>'
+    composeArgs << outputFile
+}
 
 // environment properties
 def envVars = [:]
@@ -123,23 +127,12 @@ if (isWindows) {
 else {
     script = File.createTempFile("script", ".sh", workdir)
 
-    // environment files
-    scriptPaths.each { filePath ->
-        def envScript = new File(filePath)
-        if (envScript.exists()) {
-            envScript.setExecutable(true)
-            script << "source \"${filePath}\"\n"
-        }
-        else {
-            throw new RuntimeException("Could not find script file at ${filePath}")
-        }
-    }
-
     // write the Environment Variables
     envVars.each { var ->
         script << "export ${var.getKey()}=\"${var.getValue()}\"\n"
     }
 }
+
 if (!saveScript) {
     script.deleteOnExit()
 }
@@ -156,12 +149,12 @@ if (verbose) {
 }
 
 try {
-    ch.runCommand("Executing Compose up...", args)
+    ch.runCommand("Executing Compose logs...", args)
 } catch (ExitCodeException ex) {
-    DockerUtils.info("\n\n[Error] Unable to run docker-compose up. Running the CLI's --help output for additional assistance.")
+    DockerUtils.info("\n\n[Error] Unable to run docker-compose logs. Running the CLI's --help output for additional assistance.")
     DockerUtils.info("============ Compose --help Output ============")
-    List<String> helpArgs = [DOCKER_COMPOSE, "up", "--help"]
-    ch.runCommand("Executing Compose up --help", helpArgs)
+    List<String> helpArgs = [DOCKER_COMPOSE, "config", "--help"]
+    ch.runCommand("Executing Compose config --help", helpArgs)
     DockerUtils.info("\n============ Stack Trace Output ===============")
     ex.printStackTrace()
     System.exit(1)

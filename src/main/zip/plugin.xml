@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1">
     <header>
-        <identifier id="com.serena.air.plugin.DockerCompose" name="Docker Compose" version="4"/>
+        <identifier id="com.serena.air.plugin.DockerCompose" name="Docker Compose" version="5"/>
         <description>
             Provides tasks to interact with Docker Compose.
         </description>
@@ -159,7 +159,8 @@
 
     <step-type name="Docker Compose Config">
         <description>This step validates of the applications services that are defined in compose file(s)
-            (docker-composer config).</description>
+            (docker-composer config).
+        </description>
         <properties>
             <property name="composeFiles">
                 <property-ui type="textAreaBox"
@@ -188,8 +189,8 @@
             </property>
             <property name="outputFile">
                 <property-ui type="textBox"
-                             label="Output File"
-                             description="Write the validated config to the give file. Leave blank if no output file is required."/>
+                             label="Output File" default-value="docker-compose-all.yml"
+                             description="Write the validated config to the given file."/>
             </property>
             <property name="commandPath" required="false">
                 <property-ui type="textBox" hidden="true"
@@ -378,6 +379,134 @@
             <arg path="classes:lib/DockerCompose.jar"/>
             <arg value="-Djnp.disableDiscovery=true"/>
             <arg file="ComposeOverrides.groovy"/>
+            <arg file="${PLUGIN_INPUT_PROPS}"/>
+            <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+        </command>
+    </step-type>
+
+    <step-type name="List Services">
+        <description>This step lists the services defined in a docker-compose file for selection and use in other steps.</description>
+        <properties>
+            <property name="composeFiles">
+                <property-ui type="textAreaBox"
+                             label="Compose Files"
+                             description="A list of paths to Compose YAML files, separated by newline characters.
+                                The default Compose file is docker-compose.yml."/>
+            </property>
+            <property name="composeProjectName">
+                <property-ui type="textBox"
+                             label="Project Name"
+                             description="Specify an alternate project name. By default, the project name is the directory name."/>
+            </property>
+            <property name="userInterventionRequired">
+                <property-ui type="checkBox" label="Display Results Selection Dialog" default-value="true"
+                             description="Controls whether the information should be displayed"/>
+            </property>
+            <property name="keyColumnName">
+                <property-ui default-value="Name" description="Column name to be used for selection" hidden="true"
+                             label="Key column Name for Selection" type="textBox"/>
+            </property>
+            <property name="verbose" required="false">
+                <property-ui type="checkBox" label="Verbose Output" hidden="true"
+                             description="Select this option to display verbose output during execution."/>
+            </property>
+            <property name="debug" required="false">
+                <property-ui type="checkBox" label="Debug Output" hidden="true"
+                             description="Select this option to display debug output during execution."/>
+            </property>
+        </properties>
+        <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put("Status", "Failure");
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+        <command program="${GROOVY_HOME}/bin/groovy">
+            <arg value="-cp"/>
+            <arg path="classes:lib/DockerCompose.jar"/>
+            <arg value="-Djnp.disableDiscovery=true"/>
+            <arg file="ListServices.groovy"/>
+            <arg file="${PLUGIN_INPUT_PROPS}"/>
+            <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+        </command>
+    </step-type>
+
+
+    <step-type name="Get Logs">
+        <description>This step retrieves the logs for a specified service in a docker-compose file.</description>
+        <properties>
+            <property name="composeFiles">
+                <property-ui type="textAreaBox"
+                             label="Compose Files"
+                             description="A list of paths to Compose YAML files, separated by newline characters.
+                                The default Compose file is docker-compose.yml."/>
+            </property>
+            <property name="composeProjectName">
+                <property-ui type="textBox"
+                             label="Project Name"
+                             description="Specify an alternate project name. By default, the project name is the directory name."/>
+            </property>
+            <property name="serviceName" required="true">
+                <property-ui type="textBox" label="Service Name" default-value="${p:prevStep/UIP}"
+                             description="The service name can be passed from a previous List Services step or you can enter a service name."/>
+            </property>
+            <property name="outputFile">
+                <property-ui type="textBox"
+                             label="Output File" default-value="${p:prevStep/UIP}-log.txt"
+                             description="Write the log to the given file."/>
+            </property>
+            <property name="composeOptions">
+                <property-ui type="textBox"
+                             label="Additional Options"
+                             description="Specify additional command-line options for the docker-compose logs command."/>
+            </property>
+            <property name="envPropValues">
+                <property-ui type="textAreaBox"
+                             label="Environment Property Values"
+                             hidden="true"
+                             description="Specify environment variables by separating the name and value by an
+                                equals sign and each pair by a newline or comma. Values specified here will
+                                take precedence over the environment script variables."
+                             default-value="${p:environment/allProperties}"/>
+            </property>
+            <property name="showTimestamps" required="false">
+                <property-ui type="checkBox" label="Show Timestamps" default-value="false"
+                             description="Show timestamps in the log."/>
+            </property>
+            <property name="logLines" required="false">
+                <property-ui type="textBox" label="Number of lines" default-value="all"
+                             description="Number of lines to show from the end of the logs for each container."/>
+            </property>
+            <property name="commandPath" required="false">
+                <property-ui type="textBox" hidden="true"
+                             label="Compose Path"
+                             description="The name of the docker-compose command if it is in the system path,
+                                or the full path to run the docker-compose command."/>
+            </property>
+            <property name="verbose" required="false">
+                <property-ui type="checkBox" label="Verbose Output" hidden="true"
+                             description="Select this option to display verbose output during execution."/>
+            </property>
+            <property name="debug" required="false">
+                <property-ui type="checkBox" label="Debug Output" hidden="true"
+                             description="Select this option to display debug output during execution."/>
+            </property>
+        </properties>
+        <post-processing><![CDATA[
+        if (properties.get("exitCode") != 0) {
+            properties.put("Status", "Failure");
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+        <command program="${GROOVY_HOME}/bin/groovy">
+            <arg value="-cp"/>
+            <arg path="classes:lib/DockerCompose.jar"/>
+            <arg value="-Djnp.disableDiscovery=true"/>
+            <arg file="GetLogs.groovy"/>
             <arg file="${PLUGIN_INPUT_PROPS}"/>
             <arg file="${PLUGIN_OUTPUT_PROPS}"/>
         </command>

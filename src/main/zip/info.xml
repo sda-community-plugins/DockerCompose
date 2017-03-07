@@ -136,7 +136,7 @@
           you should just append to the existing 'LATEST' tag.
           -->
 
-        <release-note plugin-version="4">
+        <release-note plugin-version="5">
             Installing this plugin will give you access to tasks for integrating with Docker Compose.
         </release-note>
 

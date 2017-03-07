@@ -13,7 +13,7 @@
         <category>Configuration Management</category>
     </categories>
     <versions>
-        <version name="4">
+        <version name="5">
             <releaseNote>
                 Installing this plugin will give you access to tasks for integrating with Docker Compose.
             </releaseNote>

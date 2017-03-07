@@ -22,4 +22,14 @@
 		<migrate-command name="Create Compose Overrides" />
 	</migrate>
 
+	<migrate to-version="5">
+		<migrate-command name="Docker Compose Up" />
+		<migrate-command name="Docker Compose Down" />
+		<migrate-command name="Docker Compose Config" />
+		<migrate-command name="Docker Compose (Generic)" />
+		<migrate-command name="Create Compose Overrides" />
+		<migrate-command name="List Services" />
+		<migrate-command name="Get Logs" />
+	</migrate>
+
 </plugin-upgrade>
