@@ -53,7 +53,7 @@ composeFilePaths.each { path ->
     def composeFileFormat
     try {
         composeFileFormat = composeYml.version
-        if ('2'.equals(composeFileFormat.toString())) {
+        if ('2'.equals(composeFileFormat.toString()) || '3'.equals(composeFileFormat.toString())) {
             DockerUtils.info("Found compose file format version ${composeFileFormat}")
             serviceList = composeYml.services
             DockerUtils.info("Found services: ${serviceList}")

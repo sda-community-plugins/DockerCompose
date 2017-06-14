@@ -86,45 +86,61 @@ public class DockerUtils {
      *  @return Canonical path String to the docker-compose executable
      */
     public static String findDockerComposeExecutable(String input) {
-        final String EXECUTABLE = "docker-compose"
-        String result = EXECUTABLE
-        // If input is not the default EXECUTABLE value, continue
-        if (input != EXECUTABLE) {
+        return findDockerExecutable("docker-compose", input);
+    }
+
+    /**
+     *  @param input The file or directory of the docker-compose executable
+     *  @return Canonical path String to the docker-compose executable
+     */
+    public static String findDockerExecutable(String input) {
+        return findDockerExecutable("docker", input);
+    }
+
+    /**
+     *  @param executable The default exeutable docker/docker-compose to search for
+     *  @param input The file or directory of the docker/docker-compose executable
+     *  @return Canonical path String to the docker/docker-compose executable
+     */
+    public static String findDockerExecutable(String executable, String input) {
+        String result = executable
+        // If input is not the default executable value, continue
+        if (input != executable) {
             File exe = new File(input)
 
-            // If input is directory, look for the EXECUTABLE
+            // If input is directory, look for the executable
             if (exe.isDirectory()) {
                 boolean dcFound = false
-                // Loop through all files looking for EXECUTABLE
+                // Loop through all files looking for executable
                 exe.eachFile(FileType.FILES) { file ->
-                    if (file.getName().contains(EXECUTABLE)) {
+                    if (file.getName().contains(executable)) {
                         dcFound = true
                     }
                 }
 
-                // Fail if EXECUTABLE is not found in directory
+                // Fail if executable is not found in directory
                 if (!dcFound) {
                     throw new IOException("[ERROR] The specified folder '${input}' " +
-                            "does not contain the ${EXECUTABLE} executable.")
+                            "does not contain the ${executable} executable.")
                 }
 
                 // Construct path to executable
-                result = exe.getCanonicalPath() + File.separator + EXECUTABLE
+                result = exe.getCanonicalPath() + File.separator + executable
 
-                // If input is file, confirm it's the EXECUTABLE
+                // If input is file, confirm it's the executable
             } else if (exe.isFile()) {
 
-                // If EXECUTABLE name does not exist in input file name, fail
-                if (!exe.getName().contains(EXECUTABLE)) {
+                // If executable name does not exist in input file name, fail
+                if (!exe.getName().contains(executable)) {
                     throw new FileNotFoundException("[ERROR] The specified file '${input}' " +
-                            "is not a ${EXECUTABLE} executable.")
+                            "is not a ${executable} executable.")
                 }
                 result = exe.getCanonicalPath()
             }
 
             // Fail if input is neither a file nor directory
             else {
-                throw new IOException("[ERROR] The specified ${EXECUTABLE} input '${input}' does not exist.")
+                throw new IOException("[ERROR] The specified ${executable} input '${input}' does not exist.")
             }
         }
 
@@ -133,7 +149,7 @@ public class DockerUtils {
             result = "\"" + result + "\""
         }
 
-        DockerUtils.info("Using ${EXECUTABLE} executable: ${result}")
+        DockerUtils.info("Using ${executable} executable: ${result}")
         return result
     }
 

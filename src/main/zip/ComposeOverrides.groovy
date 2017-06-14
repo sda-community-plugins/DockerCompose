@@ -28,7 +28,7 @@ options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 Yaml yaml = new Yaml(options);
 
 overrides.put(componentName, ['image' : componentVersion])
-servicesYaml = yaml.dump(['version': '2', 'services': overrides])
+servicesYaml = yaml.dump(['version': '3', 'services': overrides])
 
 if (composeFile) {
     composeOverrideFile = new File(componentName+'-overrides.yml')
