@@ -139,6 +139,15 @@
         <release-note plugin-version="5">
             Installing this plugin will give you access to tasks for integrating with Docker Compose.
         </release-note>
+        <release-note plugin-version="6">
+            Major refactoring and fixes.
+        </release-note>
+        <release-note plugin-version="7">
+            Updated generic command.
+        </release-note>
+        <release-note plugin-version="8">
+           Added registry server to compose overrides.
+        </release-note>
 
     </release-notes>
 </pluginInfo>

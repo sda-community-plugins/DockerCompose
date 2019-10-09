@@ -1,0 +1,648 @@
+{
+    "entityType": "Component",
+    "name": "compose",
+    "description": "Ring2Park Microservices - compose configuration files",
+    "created": 1570521418153,
+    "importAutomatically": false,
+    "useVfs": true,
+    "active": true,
+    "deleted": false,
+    "defaultVersionType": "FULL",
+    "cleanupDaysToKeep": 0,
+    "cleanupCountToKeep": 0,
+    "envPropDefs": [
+        {
+            "name": "EUREKA_HOST",
+            "label": "Eureka Hostname",
+            "extendedLabel": "Eureka Hostname",
+            "type": "TEXT",
+            "value": "eureka-service",
+            "required": true,
+            "description": "The hostname of the (Eureka) registration and discovery server",
+            "hidden": false
+        },
+        {
+            "name": "EUREKA_PORT",
+            "label": "Eureka Port",
+            "extendedLabel": "Eureka Port",
+            "type": "TEXT",
+            "value": "1111",
+            "required": true,
+            "description": "The TCP port of the (Eureka) registration and discovery server",
+            "hidden": false
+        },
+        {
+            "name": "EUREKA_CLIENT_SERVICEURL_DEFAULTZONE",
+            "label": "Eureka URI",
+            "extendedLabel": "Eureka URI",
+            "type": "TEXT",
+            "value": "http:\/\/${environment\/EUREKA_HOST}:${environment\/EUREKA_PORT}\/eureka",
+            "required": true,
+            "description": "The full address of the (Eureka) registration and discovery server",
+            "hidden": false
+        },
+        {
+            "name": "USERS_SERVICE_PORT",
+            "label": "Users Service Port",
+            "extendedLabel": "Users Service Port",
+            "type": "TEXT",
+            "value": "8081",
+            "required": true,
+            "description": "The TCP port of the users-service",
+            "hidden": false
+        },
+        {
+            "name": "WEB_UI_PORT",
+            "label": "Web UI Port",
+            "extendedLabel": "Web UI Port",
+            "type": "TEXT",
+            "value": "8088",
+            "required": true,
+            "description": "The TCP port of the web ui service",
+            "hidden": false
+        },
+        {
+            "name": "LOCATIONS_SERVICE_PORT",
+            "label": "Locations Service Port",
+            "extendedLabel": "Locations Service Port",
+            "type": "TEXT",
+            "value": "8082",
+            "required": true,
+            "description": "The TCP port of the locations service",
+            "hidden": false
+        },
+        {
+            "name": "LOCATIONS_SERVICE_HOST",
+            "label": "Locations Service Hostname",
+            "extendedLabel": "Locations Service Hostname",
+            "type": "TEXT",
+            "value": "locations-service-int",
+            "required": false,
+            "description": "The hostname\/service name of the locations service",
+            "hidden": false
+        },
+        {
+            "name": "USERS_WERVICE_HOST",
+            "label": "Users Service Hostname",
+            "extendedLabel": "Users Service Hostname",
+            "type": "TEXT",
+            "value": "users-service-int",
+            "required": true,
+            "description": "The hostname\/service name of the users service",
+            "hidden": false
+        },
+        {
+            "name": "WEB_UI_HOSTNAME",
+            "label": "Web UI Hostname",
+            "extendedLabel": "Web UI Hostname",
+            "type": "TEXT",
+            "value": "web-ui-int",
+            "required": true,
+            "description": "The hostname\/service name of the web ui service",
+            "hidden": false
+        }
+    ],
+    "versionPropDefs": [],
+    "propSheetGroup": {"propSheets": [
+        {
+            "name": "template",
+            "properties": []
+        },
+        {
+            "name": "code_station",
+            "properties": [{
+                "name": "repository",
+                "value": "abdbd7dd-c7f9-43a2-be9b-6e0e2dde3bbc",
+                "description": "",
+                "secure": false
+            }]
+        },
+        {
+            "name": "custom",
+            "properties": []
+        }
+    ]},
+    "processes": [
+        {
+            "name": "compose-down",
+            "description": "Start all docker containers using \"docker-compose down\"",
+            "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+            "takesVersion": false,
+            "status": "",
+            "active": true,
+            "deleted": false,
+            "executionTimeout": 0,
+            "propDefs": [],
+            "rootActivity": {
+                "edges": [
+                    {
+                        "to": "Docker Compose Down",
+                        "type": "ALWAYS",
+                        "value": ""
+                    },
+                    {
+                        "to": "72a9-de45-e8f9-e378",
+                        "from": "Docker Compose Down",
+                        "type": "SUCCESS",
+                        "value": ""
+                    }
+                ],
+                "offsets": [
+                    {
+                        "name": "Docker Compose Down",
+                        "x": -84,
+                        "y": 310
+                    },
+                    {
+                        "name": "72a9-de45-e8f9-e378",
+                        "x": 0,
+                        "y": 786
+                    }
+                ],
+                "sizes": [
+                    {
+                        "name": "72a9-de45-e8f9-e378",
+                        "width": 0,
+                        "height": 0
+                    },
+                    {
+                        "name": "Docker Compose Down",
+                        "width": 0,
+                        "height": 0
+                    }
+                ],
+                "type": "graph",
+                "name": "1f5385b3-f96b-4733-9e15-2bfc6259c272",
+                "children": [
+                    {
+                        "type": "finish",
+                        "name": "72a9-de45-e8f9-e378",
+                        "children": []
+                    },
+                    {
+                        "allowFailure": false,
+                        "useImpersonation": false,
+                        "showHidden": false,
+                        "impersonationUseSudo": false,
+                        "impersonationUseSsh": false,
+                        "commandName": "Docker Compose Down",
+                        "pluginName": "Docker Compose",
+                        "pluginVersion": 6,
+                        "properties": {
+                            "composeFiles": "docker-compose.yml",
+                            "composeProjectName": "",
+                            "composeOptions": "",
+                            "scriptPaths": "",
+                            "commandPath": "",
+                            "envPropValues": "${p:environment\/allProperties}",
+                            "saveScript": "false",
+                            "debug": ""
+                        },
+                        "type": "plugin",
+                        "name": "Docker Compose Down",
+                        "children": []
+                    }
+                ]
+            }
+        },
+        {
+            "name": "compose-restart",
+            "description": "Restart all service using \"docker-compose restart\" command",
+            "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+            "takesVersion": false,
+            "status": "",
+            "active": true,
+            "deleted": false,
+            "executionTimeout": 0,
+            "propDefs": [],
+            "rootActivity": {
+                "edges": [
+                    {
+                        "to": "Docker Compose (Generic)",
+                        "type": "ALWAYS",
+                        "value": ""
+                    },
+                    {
+                        "to": "d11d-cea9-0826-d681",
+                        "from": "Docker Compose (Generic)",
+                        "type": "SUCCESS",
+                        "value": ""
+                    }
+                ],
+                "offsets": [
+                    {
+                        "name": "d11d-cea9-0826-d681",
+                        "x": 0,
+                        "y": 796
+                    },
+                    {
+                        "name": "Docker Compose (Generic)",
+                        "x": -94,
+                        "y": 260
+                    }
+                ],
+                "sizes": [
+                    {
+                        "name": "d11d-cea9-0826-d681",
+                        "width": 0,
+                        "height": 0
+                    },
+                    {
+                        "name": "Docker Compose (Generic)",
+                        "width": 0,
+                        "height": 0
+                    }
+                ],
+                "type": "graph",
+                "name": "3613a664-f62d-40ff-8ee0-271bf3abdf5d",
+                "children": [
+                    {
+                        "type": "finish",
+                        "name": "d11d-cea9-0826-d681",
+                        "children": []
+                    },
+                    {
+                        "allowFailure": false,
+                        "useImpersonation": false,
+                        "showHidden": false,
+                        "impersonationUseSudo": false,
+                        "impersonationUseSsh": false,
+                        "commandName": "Docker Compose (Generic)",
+                        "pluginName": "Docker Compose",
+                        "pluginVersion": 7,
+                        "properties": {
+                            "composeFiles": "docker-compose.yml",
+                            "composeProjectName": "",
+                            "command": "restart",
+                            "composeOptions": "",
+                            "scriptPaths": "",
+                            "commandPath": "",
+                            "envPropValues": "${p:environment\/allProperties}",
+                            "saveScript": "false",
+                            "debug": ""
+                        },
+                        "type": "plugin",
+                        "name": "Docker Compose (Generic)",
+                        "children": []
+                    }
+                ]
+            }
+        },
+        {
+            "name": "compose-service-log",
+            "description": "Get the log file for a particular service",
+            "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+            "takesVersion": false,
+            "status": "",
+            "active": true,
+            "deleted": false,
+            "executionTimeout": 0,
+            "propDefs": [],
+            "rootActivity": {
+                "edges": [
+                    {
+                        "to": "Upload Step Attachment",
+                        "from": "Get Logs",
+                        "type": "SUCCESS",
+                        "value": ""
+                    },
+                    {
+                        "to": "Get Logs",
+                        "from": "List Services",
+                        "type": "SUCCESS",
+                        "value": ""
+                    },
+                    {
+                        "to": "List Services",
+                        "type": "ALWAYS",
+                        "value": ""
+                    },
+                    {
+                        "to": "c2c6-bc4a-98e9-e884",
+                        "from": "Upload Step Attachment",
+                        "type": "SUCCESS",
+                        "value": ""
+                    }
+                ],
+                "offsets": [
+                    {
+                        "name": "Upload Step Attachment",
+                        "x": -94,
+                        "y": 430
+                    },
+                    {
+                        "name": "c2c6-bc4a-98e9-e884",
+                        "x": 1.5,
+                        "y": 590
+                    },
+                    {
+                        "name": "Get Logs",
+                        "x": -69,
+                        "y": 310
+                    },
+                    {
+                        "name": "List Services",
+                        "x": -69,
+                        "y": 180
+                    }
+                ],
+                "sizes": [
+                    {
+                        "name": "c2c6-bc4a-98e9-e884",
+                        "width": 0,
+                        "height": 0
+                    },
+                    {
+                        "name": "List Services",
+                        "width": 0,
+                        "height": 0
+                    },
+                    {
+                        "name": "Upload Step Attachment",
+                        "width": 0,
+                        "height": 0
+                    },
+                    {
+                        "name": "Get Logs",
+                        "width": 0,
+                        "height": 0
+                    }
+                ],
+                "type": "graph",
+                "name": "23716bcc-eb26-47ad-aeac-49630229597e",
+                "children": [
+                    {
+                        "type": "finish",
+                        "name": "c2c6-bc4a-98e9-e884",
+                        "children": []
+                    },
+                    {
+                        "allowFailure": false,
+                        "useImpersonation": false,
+                        "showHidden": false,
+                        "impersonationUseSudo": false,
+                        "impersonationUseSsh": false,
+                        "commandName": "List Services",
+                        "pluginName": "Docker Compose",
+                        "pluginVersion": 6,
+                        "properties": {
+                            "composeFiles": "docker-compose.yml",
+                            "composeProjectName": "",
+                            "userInterventionRequired": "true",
+                            "keyColumnName": "Name",
+                            "debug": ""
+                        },
+                        "type": "plugin",
+                        "name": "List Services",
+                        "children": []
+                    },
+                    {
+                        "allowFailure": false,
+                        "useImpersonation": false,
+                        "showHidden": false,
+                        "impersonationUseSudo": false,
+                        "impersonationUseSsh": false,
+                        "commandName": "Get Logs",
+                        "pluginName": "Docker Compose",
+                        "pluginVersion": 6,
+                        "properties": {
+                            "composeFiles": "docker-compose.yml",
+                            "composeProjectName": "",
+                            "serviceName": "${p:prevStep\/UIP}",
+                            "outputFile": "${p:prevStep\/UIP}-log.txt",
+                            "composeOptions": "",
+                            "envPropValues": "${p:environment\/allProperties}",
+                            "showTimestamps": "false",
+                            "logLines": "",
+                            "commandPath": "",
+                            "debug": ""
+                        },
+                        "type": "plugin",
+                        "name": "Get Logs",
+                        "children": []
+                    },
+                    {
+                        "allowFailure": false,
+                        "useImpersonation": false,
+                        "showHidden": false,
+                        "impersonationUseSudo": false,
+                        "impersonationUseSsh": false,
+                        "commandName": "Upload Step Attachment",
+                        "pluginName": "DA Versioned File Storage",
+                        "pluginVersion": 23,
+                        "properties": {
+                            "attachmentName": "${p:Get Logs\/serviceName} Log File",
+                            "path": "${p:Get Logs\/outputFile}",
+                            "targetStep": "Get Logs",
+                            "format": "text",
+                            "deleteAfterUpload": "true"
+                        },
+                        "type": "plugin",
+                        "name": "Upload Step Attachment",
+                        "children": []
+                    }
+                ]
+            }
+        },
+        {
+            "name": "compose-up",
+            "description": "Start all docker containers using \"docker-compose up\"",
+            "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+            "takesVersion": false,
+            "status": "",
+            "active": true,
+            "deleted": false,
+            "executionTimeout": 0,
+            "propDefs": [],
+            "rootActivity": {
+                "edges": [
+                    {
+                        "to": "Upload Step Attachment",
+                        "from": "Docker Compose Config",
+                        "type": "SUCCESS",
+                        "value": ""
+                    },
+                    {
+                        "to": "Docker Compose Up",
+                        "from": "Upload Step Attachment",
+                        "type": "SUCCESS",
+                        "value": ""
+                    },
+                    {
+                        "to": "c2c6-bc4a-98e9-e884",
+                        "from": "Docker Compose Up",
+                        "type": "SUCCESS",
+                        "value": ""
+                    },
+                    {
+                        "to": "Install Template",
+                        "type": "ALWAYS",
+                        "value": ""
+                    },
+                    {
+                        "to": "Docker Compose Config",
+                        "from": "Install Template",
+                        "type": "SUCCESS",
+                        "value": ""
+                    }
+                ],
+                "offsets": [
+                    {
+                        "name": "c2c6-bc4a-98e9-e884",
+                        "x": 0,
+                        "y": 600
+                    },
+                    {
+                        "name": "Upload Step Attachment",
+                        "x": -94,
+                        "y": 340
+                    },
+                    {
+                        "name": "Docker Compose Config",
+                        "x": -89,
+                        "y": 224
+                    },
+                    {
+                        "name": "Docker Compose Up",
+                        "x": -79,
+                        "y": 470
+                    },
+                    {
+                        "name": "Install Template",
+                        "x": -109,
+                        "y": 110
+                    }
+                ],
+                "sizes": [
+                    {
+                        "name": "Install Template",
+                        "width": 0,
+                        "height": 0
+                    },
+                    {
+                        "name": "Docker Compose Up",
+                        "width": 0,
+                        "height": 0
+                    },
+                    {
+                        "name": "c2c6-bc4a-98e9-e884",
+                        "width": 0,
+                        "height": 0
+                    },
+                    {
+                        "name": "Upload Step Attachment",
+                        "width": 0,
+                        "height": 0
+                    },
+                    {
+                        "name": "Docker Compose Config",
+                        "width": 0,
+                        "height": 0
+                    }
+                ],
+                "type": "graph",
+                "name": "29d5fcc8-c200-40ec-8024-43cca0c9f237",
+                "children": [
+                    {
+                        "type": "finish",
+                        "name": "c2c6-bc4a-98e9-e884",
+                        "children": []
+                    },
+                    {
+                        "allowFailure": false,
+                        "useImpersonation": false,
+                        "showHidden": false,
+                        "impersonationUseSudo": false,
+                        "impersonationUseSsh": false,
+                        "commandName": "Docker Compose Up",
+                        "pluginName": "Docker Compose",
+                        "pluginVersion": 6,
+                        "properties": {
+                            "composeFiles": "docker-compose.yml",
+                            "composeProjectName": "",
+                            "composeOptions": "",
+                            "scriptPaths": "",
+                            "commandPath": "",
+                            "runDetached": "true",
+                            "envPropValues": "${p:environment\/allProperties}",
+                            "saveScript": "true",
+                            "debug": "true"
+                        },
+                        "type": "plugin",
+                        "name": "Docker Compose Up",
+                        "children": []
+                    },
+                    {
+                        "allowFailure": false,
+                        "useImpersonation": false,
+                        "showHidden": false,
+                        "impersonationUseSudo": false,
+                        "impersonationUseSsh": false,
+                        "commandName": "Docker Compose Config",
+                        "pluginName": "Docker Compose",
+                        "pluginVersion": 6,
+                        "properties": {
+                            "composeFiles": "docker-compose.yml",
+                            "composeProjectName": "",
+                            "composeOptions": "",
+                            "envPropValues": "${p:environment\/allProperties}",
+                            "outputFile": "docker-compose-all.yml",
+                            "commandPath": "",
+                            "saveScript": "true",
+                            "debug": "true"
+                        },
+                        "type": "plugin",
+                        "name": "Docker Compose Config",
+                        "children": []
+                    },
+                    {
+                        "allowFailure": false,
+                        "useImpersonation": false,
+                        "showHidden": false,
+                        "impersonationUseSudo": false,
+                        "impersonationUseSsh": false,
+                        "commandName": "Install Template",
+                        "pluginName": "DA Configuration Management",
+                        "pluginVersion": 6,
+                        "properties": {
+                            "serverUrl": "${p:server.url}\/",
+                            "requestId": "${p:request.id}",
+                            "name": "docker-compose.yml",
+                            "envPropValues": "${environment\/allProperties}"
+                        },
+                        "type": "plugin",
+                        "name": "Install Template",
+                        "children": []
+                    },
+                    {
+                        "allowFailure": false,
+                        "useImpersonation": false,
+                        "showHidden": false,
+                        "impersonationUseSudo": false,
+                        "impersonationUseSsh": false,
+                        "commandName": "Upload Step Attachment",
+                        "pluginName": "DA Versioned File Storage",
+                        "pluginVersion": 23,
+                        "properties": {
+                            "attachmentName": "${p:prevStep\/outputFile}",
+                            "path": "${p:prevStep\/outputFile}",
+                            "targetStep": "Docker Compose Config",
+                            "format": "auto",
+                            "deleteAfterUpload": "false"
+                        },
+                        "type": "plugin",
+                        "name": "Upload Step Attachment",
+                        "children": []
+                    }
+                ]
+            }
+        }
+    ],
+    "taskDefs": [],
+    "configTemplates": [{
+        "name": "docker-compose.yml",
+        "active": true,
+        "data": "version: \"3\"\nservices:\n  eureka-service:\n    image: eureka-service:latest\n    environment:\n        EUREKA_HOST: ${EUREKA_HOST}\n        EUREKA_PORT: ${EUREKA_PORT}\n        EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}\n        HTTP_PORT: ${EUREKA_PORT}\n    restart: always\n    ports:\n     - \"${EUREKA_PORT}:${EUREKA_PORT}\"\n \n  users-service:\n    image: users-service:latest\n    environment:\n        EUREKA_HOST: ${EUREKA_HOST}\n        EUREKA_PORT: ${EUREKA_PORT}\n        EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}\n        HTTP_PORT: ${USERS_SERVICE_PORT}\n    restart: always\n    ports:\n     - \"${USERS_SERVICE_PORT}:${USERS_SERVICE_PORT}\"\n    links:\n     - eureka-service\n\n  locations-service:\n    image: locations-service:latest\n    environment:\n        EUREKA_HOST: ${EUREKA_HOST}\n        EUREKA_PORT: ${EUREKA_PORT}\n        EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}\n        HTTP_PORT: ${LOCATIONS_SERVICE_PORT}\n    restart: always\n    ports:\n     - \"${LOCATIONS_SERVICE_PORT}:${LOCATIONS_SERVICE_PORT}\"\n    links:\n     - eureka-service\n\n  web-ui:\n    image: web-ui:latest\n    environment:\n        EUREKA_HOST: ${EUREKA_HOST}\n        EUREKA_PORT: ${EUREKA_PORT}\n        EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}\n        HTTP_PORT: ${WEB_UI_PORT}\n    restart: always\n    links:\n     - eureka-service\n     - users-service\n     - locations-service\n    ports:\n     - \"${WEB_UI_PORT}:${WEB_UI_PORT}\""
+    }],
+    "usingLatestProperties": true
+}

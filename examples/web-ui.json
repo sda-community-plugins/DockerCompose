@@ -1,0 +1,2374 @@
+{
+    "entityType": "Component",
+    "name": "web-ui",
+    "description": "Ring2Park Microservices - Web UI module",
+    "created": 1570102176728,
+    "importAutomatically": false,
+    "useVfs": true,
+    "active": true,
+    "deleted": false,
+    "defaultVersionType": "FULL",
+    "cleanupDaysToKeep": 0,
+    "cleanupCountToKeep": 0,
+    "componentTemplate": {
+        "entityType": "ComponentTemplate",
+        "name": "docker",
+        "description": "Docker Template",
+        "sourceConfigTypeName": "Jenkins",
+        "active": true,
+        "sourceConfigProperties": [],
+        "envPropDefs": [
+            {
+                "name": "container.links",
+                "label": "Container Links",
+                "extendedLabel": "Container Links",
+                "type": "TEXT",
+                "required": false,
+                "description": "Name of any containers to link to (legacy feature)",
+                "hidden": false
+            },
+            {
+                "name": "SERVER_PORT",
+                "label": "Server Port",
+                "extendedLabel": "Server Port",
+                "type": "TEXT",
+                "value": "8080",
+                "required": true,
+                "description": "The port that the service will run on",
+                "hidden": false
+            },
+            {
+                "name": "EUREKA_HOST",
+                "label": "Eureka Hostname",
+                "extendedLabel": "Eureka Hostname",
+                "type": "TEXT",
+                "value": "eureka-service",
+                "required": true,
+                "description": "The hostname of the (Eureka) registration and discovery server",
+                "hidden": false
+            },
+            {
+                "name": "EUREKA_PORT",
+                "label": "Eureka Port",
+                "extendedLabel": "Eureka Port",
+                "type": "TEXT",
+                "value": "1111",
+                "required": true,
+                "description": "The TCP port of the (Eureka) registration and discovery server",
+                "hidden": false
+            },
+            {
+                "name": "EUREKA_CLIENT_SERVICEURL_DEFAULTZONE",
+                "label": "Eureka URI",
+                "extendedLabel": "Eureka URI",
+                "type": "TEXT",
+                "value": "http:\/\/${environment\/EUREKA_HOST}:${environment\/EUREKA_PORT}\/eureka",
+                "required": true,
+                "description": "The full address of the (Eureka) registration and discovery server",
+                "hidden": false
+            },
+            {
+                "name": "SERVER_HOST",
+                "label": "Server Host",
+                "extendedLabel": "Server Host",
+                "type": "TEXT",
+                "value": "${component.name}",
+                "required": false,
+                "description": "The hostname that the service will run on (used to name the container)",
+                "hidden": false
+            },
+            {
+                "name": "primary.ip",
+                "label": "Server Primary IP",
+                "extendedLabel": "Server Primary IP",
+                "type": "TEXT",
+                "required": false,
+                "description": "Primary IP address of server (retrieved and set using get-server-ip process)",
+                "hidden": false
+            }
+        ],
+        "versionPropDefs": [
+            {
+                "name": "image.id",
+                "label": "Docker Image Id",
+                "extendedLabel": "Docker Image Id",
+                "type": "TEXT",
+                "required": false,
+                "description": "Docker Image Id",
+                "hidden": false
+            },
+            {
+                "name": "build.url",
+                "label": "Build URL",
+                "extendedLabel": "Build URL",
+                "type": "TEXT",
+                "required": false,
+                "description": "The URL to the build in the build tool, i.e. Jenkins that created the component version",
+                "hidden": false
+            },
+            {
+                "name": "issue.ids",
+                "label": "Issue Ids",
+                "extendedLabel": "Issue Ids",
+                "type": "TEXT",
+                "required": false,
+                "description": "Comma separated list of Issue Ids, i.e. JIRA Issues that were recorded against the SCM commit",
+                "hidden": false
+            },
+            {
+                "name": "build.version",
+                "label": "Build Version",
+                "extendedLabel": "Build Version",
+                "type": "TEXT",
+                "value": "1.0",
+                "required": false,
+                "description": "Version number automatically retrieved from build tool, i.e. Maven \"<project.version>\"",
+                "hidden": false
+            },
+            {
+                "name": "build.number",
+                "label": "Build Number",
+                "extendedLabel": "Build Number",
+                "type": "TEXT",
+                "required": false,
+                "description": "The build number in the build tool, i.e. Jenkins that created the component version",
+                "hidden": false
+            },
+            {
+                "name": "scm.id",
+                "label": "SCM Id",
+                "extendedLabel": "SCM Id",
+                "type": "TEXT",
+                "required": false,
+                "description": "The unique id of the SCM changeset, i.e. Git commit hash that created the component version",
+                "hidden": false
+            },
+            {
+                "name": "scm.branch",
+                "label": "SCM Branch",
+                "extendedLabel": "SCM Branch",
+                "type": "TEXT",
+                "required": false,
+                "description": "The SCM branch of the commit that created the component version.",
+                "hidden": false
+            },
+            {
+                "name": "scm.url",
+                "label": "SCM URL",
+                "extendedLabel": "SCM URL",
+                "type": "TEXT",
+                "required": false,
+                "description": "The URL of the SCM repository of the commit that created the component version",
+                "hidden": false
+            },
+            {
+                "name": "docker.image.id",
+                "label": "Docker Image Id",
+                "extendedLabel": "Docker Image Id",
+                "type": "TEXT",
+                "required": false,
+                "description": "The unique id of the docker image that was created from the component verison",
+                "hidden": false
+            }
+        ],
+        "propDefs": [],
+        "properties": [],
+        "processes": [
+            {
+                "name": "build-and-push",
+                "description": "Builds a docker image from a Dockerfile and pushes it to a registry",
+                "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                "takesVersion": true,
+                "inventoryActionType": "ADD",
+                "status": "Active",
+                "configActionType": "ADD",
+                "active": true,
+                "deleted": false,
+                "executionTimeout": 0,
+                "propDefs": [{
+                    "name": "dockerfile.path",
+                    "label": "Dockerfile Path",
+                    "extendedLabel": "Dockerfile Path",
+                    "type": "TEXT",
+                    "value": ".",
+                    "required": true,
+                    "description": "Path to Dockerfile to use",
+                    "hidden": false
+                }],
+                "rootActivity": {
+                    "edges": [
+                        {
+                            "to": "Download Artifacts",
+                            "type": "ALWAYS",
+                            "value": ""
+                        },
+                        {
+                            "to": "8cd5-23e7-46a9-b4d3",
+                            "from": "Push Image",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Push Image",
+                            "from": "Docker Login",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Docker Login",
+                            "from": "Build from Dockerfile",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Build from Dockerfile",
+                            "from": "Download Artifacts",
+                            "type": "SUCCESS",
+                            "value": ""
+                        }
+                    ],
+                    "offsets": [
+                        {
+                            "name": "Docker Login",
+                            "x": -59,
+                            "y": 390
+                        },
+                        {
+                            "name": "8cd5-23e7-46a9-b4d3",
+                            "x": 0,
+                            "y": 716
+                        },
+                        {
+                            "name": "Push Image",
+                            "x": -54,
+                            "y": 540
+                        },
+                        {
+                            "name": "Build from Dockerfile",
+                            "x": -79,
+                            "y": 250
+                        },
+                        {
+                            "name": "Download Artifacts",
+                            "x": -94,
+                            "y": 110
+                        }
+                    ],
+                    "sizes": [
+                        {
+                            "name": "Build from Dockerfile",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "8cd5-23e7-46a9-b4d3",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Docker Login",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Push Image",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Download Artifacts",
+                            "width": 0,
+                            "height": 0
+                        }
+                    ],
+                    "type": "graph",
+                    "name": "33f7c879-b60f-4d68-9df8-3e7ec1a2c926",
+                    "children": [
+                        {
+                            "type": "finish",
+                            "name": "8cd5-23e7-46a9-b4d3",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Build from Dockerfile",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "path": "${p:dockerfile.path}",
+                                "repo": "${system\/docker.registry}${p:component.name}",
+                                "tag": "${p:version.name}"
+                            },
+                            "type": "plugin",
+                            "name": "Build from Dockerfile",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Push Image",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "image": "${p:system\/docker.registry}${p:component.name}:${p:version.name}",
+                                "private": "",
+                                "user": "${p:system\/docker.username}",
+                                "pass": "pbe{gmUuXWZNE3VfSa12kGkcdh5eXnBC2kzybSUYmWmN9nHXD77rQUQBk6VupuIPuhmr}"
+                            },
+                            "type": "plugin",
+                            "name": "Push Image",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Download Artifacts",
+                            "pluginName": "DA Versioned File Storage",
+                            "pluginVersion": 23,
+                            "properties": {
+                                "directoryOffset": ".",
+                                "fileIncludePatterns": "**\/*",
+                                "fileExcludePatterns": "",
+                                "syncMode": "true",
+                                "fullVerification": "true",
+                                "setFileExecuteBits": "false",
+                                "verifyFileIntegrity": "false",
+                                "maxTries": "10",
+                                "repositoryUrl": "${p:server.url}\/vfs",
+                                "repositoryId": "${p:component\/code_station\/repository}",
+                                "label": "${p:version.name}",
+                                "serverUrl": "${p:server.url}",
+                                "compId": "${p:component.id}",
+                                "resId": "${p:resource.id}",
+                                "versionId": "${p:version.id}"
+                            },
+                            "type": "plugin",
+                            "name": "Download Artifacts",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Shell",
+                            "pluginName": "Shell",
+                            "pluginVersion": 4,
+                            "properties": {
+                                "directoryOffset": ".",
+                                "shellInterpreter": "",
+                                "scriptBody": "docker login ${system\/docker.registry} -u ${system\/docker.username} -p ${system\/docker.password}",
+                                "runAsDaemon": "",
+                                "outputFile": ""
+                            },
+                            "type": "plugin",
+                            "name": "Docker Login",
+                            "children": []
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "build-push-and-run",
+                "description": "Builds a docker image from a Dockerfile, pushes it to a registry and runs it",
+                "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                "takesVersion": true,
+                "inventoryActionType": "ADD",
+                "status": "Active",
+                "configActionType": "ADD",
+                "active": true,
+                "deleted": false,
+                "executionTimeout": 0,
+                "propDefs": [
+                    {
+                        "name": "dockerfile.path",
+                        "label": "Dockerfile Path",
+                        "extendedLabel": "Dockerfile Path",
+                        "type": "TEXT",
+                        "value": ".",
+                        "required": true,
+                        "description": "Path to Dockerfile to use",
+                        "hidden": false
+                    },
+                    {
+                        "name": "docker.opts",
+                        "label": "Docker Options",
+                        "extendedLabel": "Docker Options",
+                        "type": "TEXT",
+                        "required": false,
+                        "description": "Additional Docker Options, e.g. --network=isolated_nw",
+                        "hidden": false
+                    },
+                    {
+                        "name": "remove.container",
+                        "label": "Remove Existing Container",
+                        "extendedLabel": "Remove Existing Container",
+                        "type": "TEXT",
+                        "value": "true",
+                        "required": true,
+                        "description": "Remove the current version of the container",
+                        "hidden": false
+                    },
+                    {
+                        "name": "pull.image",
+                        "label": "Pull Image",
+                        "extendedLabel": "Pull Image",
+                        "type": "TEXT",
+                        "value": "true",
+                        "required": true,
+                        "description": "Pull the image from the registry",
+                        "hidden": false
+                    }
+                ],
+                "rootActivity": {
+                    "edges": [
+                        {
+                            "to": "7f73-61ef-e6f9-9eb0",
+                            "from": "pull-and-run",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "pull-and-run",
+                            "from": "build-and-push",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "build-and-push",
+                            "type": "ALWAYS",
+                            "value": ""
+                        }
+                    ],
+                    "offsets": [
+                        {
+                            "name": "7f73-61ef-e6f9-9eb0",
+                            "x": 0,
+                            "y": 776
+                        },
+                        {
+                            "name": "pull-and-run",
+                            "x": -124,
+                            "y": 380
+                        },
+                        {
+                            "name": "build-and-push",
+                            "x": -134,
+                            "y": 170
+                        }
+                    ],
+                    "sizes": [
+                        {
+                            "name": "pull-and-run",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "build-and-push",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "7f73-61ef-e6f9-9eb0",
+                            "width": 0,
+                            "height": 0
+                        }
+                    ],
+                    "type": "graph",
+                    "name": "d2522277-6b63-4d35-ae0c-e980fdf6bf55",
+                    "children": [
+                        {
+                            "type": "finish",
+                            "name": "7f73-61ef-e6f9-9eb0",
+                            "children": []
+                        },
+                        {
+                            "componentTemplateName": "docker",
+                            "componentProcessName": "build-and-push",
+                            "allowFailure": false,
+                            "properties": {"dockerfile.path": "${p:dockerfile.path}"},
+                            "type": "componentProcess",
+                            "name": "build-and-push",
+                            "children": []
+                        },
+                        {
+                            "componentTemplateName": "docker",
+                            "componentProcessName": "pull-and-run",
+                            "allowFailure": false,
+                            "properties": {
+                                "docker.opts": "${p:docker.opts}",
+                                "remove.container": "${p:remove.container}",
+                                "pull.image": "${pull.image}"
+                            },
+                            "type": "componentProcess",
+                            "name": "pull-and-run",
+                            "children": []
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "create-component-version",
+                "description": "Create a component version for a tag from a Docker Registry",
+                "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                "takesVersion": false,
+                "status": "",
+                "active": true,
+                "deleted": false,
+                "executionTimeout": 0,
+                "propDefs": [
+                    {
+                        "name": "image.tag",
+                        "label": "Image Tag",
+                        "extendedLabel": "Image Tag",
+                        "type": "TEXT",
+                        "value": "latest",
+                        "required": true,
+                        "description": "The tag of the image to create as a component version",
+                        "hidden": false
+                    },
+                    {
+                        "name": "pull.image",
+                        "label": "Pull Image",
+                        "extendedLabel": "Pull Image",
+                        "type": "TEXT",
+                        "value": "false",
+                        "required": false,
+                        "description": "Pull the image from the Docker Registry",
+                        "hidden": false
+                    }
+                ],
+                "rootActivity": {
+                    "edges": [
+                        {
+                            "to": "Pull Image?",
+                            "type": "ALWAYS",
+                            "value": ""
+                        },
+                        {
+                            "to": "e767-77ea-385f-98ec",
+                            "from": "Create Version",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Create Version",
+                            "from": "Pull Image",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Create Version",
+                            "from": "Pull Image?",
+                            "type": "VALUE",
+                            "value": ""
+                        },
+                        {
+                            "to": "Pull Image",
+                            "from": "Pull Image?",
+                            "type": "VALUE",
+                            "value": "true\nTrue"
+                        }
+                    ],
+                    "offsets": [
+                        {
+                            "name": "Create Version",
+                            "x": -59,
+                            "y": 480
+                        },
+                        {
+                            "name": "Pull Image",
+                            "x": -208.5,
+                            "y": 300
+                        },
+                        {
+                            "name": "Pull Image?",
+                            "x": -79,
+                            "y": 130
+                        },
+                        {
+                            "name": "e767-77ea-385f-98ec",
+                            "x": 0,
+                            "y": 796
+                        }
+                    ],
+                    "sizes": [
+                        {
+                            "name": "e767-77ea-385f-98ec",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Pull Image",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Create Version",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Pull Image?",
+                            "width": 0,
+                            "height": 0
+                        }
+                    ],
+                    "type": "graph",
+                    "name": "6a17133b-8768-4ba0-a848-9146667f4103",
+                    "children": [
+                        {
+                            "type": "finish",
+                            "name": "e767-77ea-385f-98ec",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Create Version",
+                            "pluginName": "DA Version",
+                            "pluginVersion": 8,
+                            "properties": {
+                                "componentName": "${p:component.name}",
+                                "versionName": "${p:image.tag}",
+                                "uploadFiles": "",
+                                "includes": "**\/*",
+                                "excludes": "",
+                                "saveFileExecuteBits": "false",
+                                "repositoryUrl": "${p:server.url}\/vfs"
+                            },
+                            "type": "plugin",
+                            "name": "Create Version",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Pull Image",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {"image": "${system\/docker.registry}${p:component.name}:${p:image.tag}"},
+                            "type": "plugin",
+                            "name": "Pull Image",
+                            "children": []
+                        },
+                        {
+                            "propertyName": "pull.image",
+                            "type": "switch",
+                            "name": "Pull Image?",
+                            "children": []
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "create-compose-override",
+                "description": "Create a compose override file for the specific component and version",
+                "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                "takesVersion": true,
+                "inventoryActionType": "ADD",
+                "status": "Active",
+                "configActionType": "ADD",
+                "active": true,
+                "deleted": false,
+                "executionTimeout": 0,
+                "propDefs": [],
+                "rootActivity": {
+                    "edges": [
+                        {
+                            "to": "Create Compose Overrides",
+                            "type": "ALWAYS",
+                            "value": ""
+                        },
+                        {
+                            "to": "71f2-2ed0-d40b-ce64",
+                            "from": "Create Compose Overrides",
+                            "type": "SUCCESS",
+                            "value": ""
+                        }
+                    ],
+                    "offsets": [
+                        {
+                            "name": "71f2-2ed0-d40b-ce64",
+                            "x": 0,
+                            "y": 756
+                        },
+                        {
+                            "name": "Create Compose Overrides",
+                            "x": -94,
+                            "y": 370
+                        }
+                    ],
+                    "sizes": [
+                        {
+                            "name": "71f2-2ed0-d40b-ce64",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Create Compose Overrides",
+                            "width": 0,
+                            "height": 0
+                        }
+                    ],
+                    "type": "graph",
+                    "name": "f522f967-ccf4-4534-9e5a-e5235b5585f9",
+                    "children": [
+                        {
+                            "type": "finish",
+                            "name": "71f2-2ed0-d40b-ce64",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Create Compose Overrides",
+                            "pluginName": "Docker Compose",
+                            "pluginVersion": 8,
+                            "properties": {
+                                "composeFile": "${p:component.name}-overrides.yaml",
+                                "registryServer": "${application\/docker.registry}",
+                                "componentName": "${p:component.name}",
+                                "componentVersion": "${p:version.name}",
+                                "debug": "false"
+                            },
+                            "type": "plugin",
+                            "name": "Create Compose Overrides",
+                            "children": []
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "execute-command",
+                "description": "Executes a command in a running container",
+                "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                "takesVersion": false,
+                "status": "",
+                "active": true,
+                "deleted": false,
+                "executionTimeout": 0,
+                "propDefs": [{
+                    "name": "docker.cmd",
+                    "label": "Docker Command",
+                    "extendedLabel": "Docker Command",
+                    "type": "TEXTAREA",
+                    "required": false,
+                    "description": "The command to execute in the Docker container",
+                    "hidden": false
+                }],
+                "rootActivity": {
+                    "edges": [
+                        {
+                            "to": "4517afc0c797819fa316e849059e17",
+                            "from": "Execute Command",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "4517afc0c797819fa316e849059e17",
+                            "from": "is Running?",
+                            "type": "VALUE",
+                            "value": ""
+                        },
+                        {
+                            "to": "Execute Command",
+                            "from": "is Running?",
+                            "type": "VALUE",
+                            "value": "running"
+                        },
+                        {
+                            "to": "is Running?",
+                            "from": "Inspect",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Inspect",
+                            "type": "ALWAYS",
+                            "value": ""
+                        }
+                    ],
+                    "offsets": [
+                        {
+                            "name": "Execute Command",
+                            "x": -274.5,
+                            "y": 420
+                        },
+                        {
+                            "name": "Inspect",
+                            "x": -39,
+                            "y": 90
+                        },
+                        {
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "x": -1.5,
+                            "y": 636
+                        },
+                        {
+                            "name": "is Running?",
+                            "x": -80.5,
+                            "y": 210
+                        }
+                    ],
+                    "sizes": [
+                        {
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "is Running?",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Execute Command",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Inspect",
+                            "width": 0,
+                            "height": 0
+                        }
+                    ],
+                    "type": "graph",
+                    "name": "3453f051-714f-4f86-8fcd-c7ff3bc92064",
+                    "children": [
+                        {
+                            "type": "finish",
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "postProcessingScript": "0fb167d5-bd93-4abc-adae-3ce6643c6ad3",
+                            "commandName": "Inspect",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "name": "${environment\/container.name}",
+                                "type": "container",
+                                "propName": "ContainerStatus",
+                                "template": "{{.State.Status}}"
+                            },
+                            "type": "plugin",
+                            "name": "Inspect",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Execute Command",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "container": "${environment\/container.name}",
+                                "command": "${p:docker.cmd}",
+                                "detach": ""
+                            },
+                            "type": "plugin",
+                            "name": "Execute Command",
+                            "children": []
+                        },
+                        {
+                            "propertyName": "Inspect\/ContainerStatus",
+                            "type": "switch",
+                            "name": "is Running?",
+                            "children": []
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "get-server-ip",
+                "description": "Gets the primary server IP address and stores it in the application environment \"primary.ip\" property",
+                "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                "takesVersion": false,
+                "status": "",
+                "active": true,
+                "deleted": false,
+                "executionTimeout": 0,
+                "propDefs": [{
+                    "name": "ip.prefix",
+                    "label": "IP Prefix",
+                    "extendedLabel": "IP Prefix",
+                    "type": "TEXT",
+                    "value": "192",
+                    "required": true,
+                    "description": "Prefix of IP addresses to filter",
+                    "hidden": false
+                }],
+                "rootActivity": {
+                    "edges": [
+                        {
+                            "to": "Create Environment Property",
+                            "from": "Get Primary IP",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "ba6e-5850-af81-d90e",
+                            "from": "Create Environment Property",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Get Primary IP",
+                            "type": "ALWAYS",
+                            "value": ""
+                        }
+                    ],
+                    "offsets": [
+                        {
+                            "name": "Create Environment Property",
+                            "x": -105.5,
+                            "y": 280
+                        },
+                        {
+                            "name": "ba6e-5850-af81-d90e",
+                            "x": 0,
+                            "y": 440
+                        },
+                        {
+                            "name": "Get Primary IP",
+                            "x": -60.5,
+                            "y": 158
+                        }
+                    ],
+                    "sizes": [
+                        {
+                            "name": "Get Primary IP",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "ba6e-5850-af81-d90e",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Create Environment Property",
+                            "width": 0,
+                            "height": 0
+                        }
+                    ],
+                    "type": "graph",
+                    "name": "81d30f95-6737-4756-a6cc-1a6e1edb667d",
+                    "children": [
+                        {
+                            "type": "finish",
+                            "name": "ba6e-5850-af81-d90e",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "postProcessingScript": "e8b739ef-b678-4b87-8668-acf1c62b2cce",
+                            "commandName": "Shell",
+                            "pluginName": "Shell",
+                            "pluginVersion": 4,
+                            "properties": {
+                                "directoryOffset": ".",
+                                "shellInterpreter": "",
+                                "scriptBody": "echo address=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\\.){3}[0-9]*' | grep -Eo '([0-9]*\\.){3}[0-9]*' | grep -v '127.0.0.1' | grep ${ip.prefix}`",
+                                "runAsDaemon": "",
+                                "outputFile": ""
+                            },
+                            "type": "plugin",
+                            "name": "Get Primary IP",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Create Environment Property",
+                            "pluginName": "DA Environment",
+                            "pluginVersion": 12,
+                            "properties": {
+                                "application": "${p:application.name}",
+                                "environment": "${p:environment.name}",
+                                "name": "primary.ip",
+                                "value": "${Get Primary IP\/address}",
+                                "isSecure": ""
+                            },
+                            "type": "plugin",
+                            "name": "Create Environment Property",
+                            "children": []
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "pull-and-run",
+                "description": "Pull the specified Docker image version and Run it",
+                "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                "takesVersion": true,
+                "inventoryActionType": "ADD",
+                "status": "Active",
+                "configActionType": "ADD",
+                "active": true,
+                "deleted": false,
+                "executionTimeout": 0,
+                "propDefs": [
+                    {
+                        "name": "remove.container",
+                        "label": "Remove Existing Container",
+                        "extendedLabel": "Remove Existing Container",
+                        "type": "TEXT",
+                        "value": "true",
+                        "required": true,
+                        "description": "Remove the current version of the container",
+                        "hidden": false
+                    },
+                    {
+                        "name": "docker.opts",
+                        "label": "Docker Options",
+                        "extendedLabel": "Docker Options",
+                        "type": "TEXT",
+                        "required": false,
+                        "description": "Additional Docker Options, e.g. --network=isolated_nw",
+                        "hidden": false
+                    },
+                    {
+                        "name": "pull.image",
+                        "label": "Pull Image",
+                        "extendedLabel": "Pull Image",
+                        "type": "TEXT",
+                        "value": "true",
+                        "required": true,
+                        "description": "Pull the image from the registry",
+                        "hidden": false
+                    }
+                ],
+                "rootActivity": {
+                    "edges": [
+                        {
+                            "to": "Pull Image",
+                            "from": "Docker login",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Run Command",
+                            "from": "Remove Container?",
+                            "type": "VALUE",
+                            "value": ""
+                        },
+                        {
+                            "to": "Remove Container",
+                            "from": "Remove Container?",
+                            "type": "VALUE",
+                            "value": "true"
+                        },
+                        {
+                            "to": "Pull Image?",
+                            "type": "ALWAYS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Get Container Status Again",
+                            "from": "Run Command",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Remove Container?",
+                            "from": "Get Container Id",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Run Command",
+                            "from": "Get Container Status",
+                            "type": "FAILURE",
+                            "value": ""
+                        },
+                        {
+                            "to": "Stop Container",
+                            "from": "Is Running?",
+                            "type": "VALUE",
+                            "value": "running"
+                        },
+                        {
+                            "to": "Docker login",
+                            "from": "Pull Image?",
+                            "type": "VALUE",
+                            "value": "true\nTrue"
+                        },
+                        {
+                            "to": "Get Container Status",
+                            "from": "Pull Image?",
+                            "type": "VALUE",
+                            "value": ""
+                        },
+                        {
+                            "to": "b51c-3109-fa16-be92",
+                            "from": "Conatiner Running?",
+                            "type": "VALUE",
+                            "value": ""
+                        },
+                        {
+                            "to": "Is Running?",
+                            "from": "Get Container Status",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Run Command",
+                            "from": "Remove Container",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "4517afc0c797819fa316e849059e17",
+                            "from": "7986-2a1c-4344-fe65",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Run Command",
+                            "from": "Get Container Id",
+                            "type": "FAILURE",
+                            "value": ""
+                        },
+                        {
+                            "to": "4517afc0c797819fa316e849059e17",
+                            "from": "b51c-3109-fa16-be92",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Get Container Id",
+                            "from": "Stop Container",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Get Container Status",
+                            "from": "Pull Image",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Conatiner Running?",
+                            "from": "Get Container Status Again",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Get Container Id",
+                            "from": "Is Running?",
+                            "type": "VALUE",
+                            "value": ""
+                        },
+                        {
+                            "to": "7986-2a1c-4344-fe65",
+                            "from": "Conatiner Running?",
+                            "type": "VALUE",
+                            "value": "running"
+                        }
+                    ],
+                    "offsets": [
+                        {
+                            "name": "Remove Container?",
+                            "x": 293.5,
+                            "y": 856
+                        },
+                        {
+                            "name": "Get Container Status",
+                            "x": -76.5,
+                            "y": 390
+                        },
+                        {
+                            "name": "7986-2a1c-4344-fe65",
+                            "x": 62,
+                            "y": 1480
+                        },
+                        {
+                            "name": "Docker login",
+                            "x": -282,
+                            "y": 190
+                        },
+                        {
+                            "name": "Pull Image",
+                            "x": -272,
+                            "y": 300
+                        },
+                        {
+                            "name": "Conatiner Running?",
+                            "x": -108,
+                            "y": 1360
+                        },
+                        {
+                            "name": "Is Running?",
+                            "x": 163.5,
+                            "y": 516
+                        },
+                        {
+                            "name": "Pull Image?",
+                            "x": -79,
+                            "y": 120
+                        },
+                        {
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "x": -9,
+                            "y": 1600
+                        },
+                        {
+                            "name": "Remove Container",
+                            "x": 323.5,
+                            "y": 1046
+                        },
+                        {
+                            "name": "Get Container Status Again",
+                            "x": -103,
+                            "y": 1230
+                        },
+                        {
+                            "name": "Stop Container",
+                            "x": 423.5,
+                            "y": 636
+                        },
+                        {
+                            "name": "Run Command",
+                            "x": -68,
+                            "y": 1106
+                        },
+                        {
+                            "name": "b51c-3109-fa16-be92",
+                            "x": -192,
+                            "y": 1480
+                        },
+                        {
+                            "name": "Get Container Id",
+                            "x": 178.5,
+                            "y": 716
+                        }
+                    ],
+                    "sizes": [
+                        {
+                            "name": "Get Container Status",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Docker login",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Run Command",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Get Container Id",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Get Container Status Again",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Remove Container",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Pull Image",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Pull Image?",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Stop Container",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Is Running?",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Conatiner Running?",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "7986-2a1c-4344-fe65",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Remove Container?",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "b51c-3109-fa16-be92",
+                            "width": 0,
+                            "height": 0
+                        }
+                    ],
+                    "type": "graph",
+                    "name": "46a61662-1bae-4d3c-8bb0-3c90ab71ab23",
+                    "children": [
+                        {
+                            "type": "finish",
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Pull Image",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {"image": "${p:system\/docker.registry}${p:component.name}:${p:version.name}"},
+                            "type": "plugin",
+                            "name": "Pull Image",
+                            "children": []
+                        },
+                        {
+                            "propertyName": "Get Container Status\/ContainerStatus",
+                            "type": "switch",
+                            "name": "Is Running?",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Stop Container",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "container": "${environment\/SERVER_HOST}",
+                                "timer": "60"
+                            },
+                            "type": "plugin",
+                            "name": "Stop Container",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Remove Container",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "container": "${environment\/SERVER_HOST}",
+                                "force": "true"
+                            },
+                            "type": "plugin",
+                            "name": "Remove Container",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": true,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Run Command",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "name": "${environment\/SERVER_HOST}",
+                                "detach": "true",
+                                "ports": "${environment\/SERVER_PORT}:${environment\/SERVER_PORT}",
+                                "links": "${environment\/container.links}",
+                                "image": "${p:system\/docker.registry}${p:component.name}:${p:version.name}",
+                                "options": "${p:docker.opts}",
+                                "command": "",
+                                "envPropValues": "${environment\/allProperties}"
+                            },
+                            "type": "plugin",
+                            "name": "Run Command",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "postProcessingScript": "0fb167d5-bd93-4abc-adae-3ce6643c6ad3",
+                            "commandName": "Inspect",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "name": "${environment\/SERVER_HOST}",
+                                "type": "container",
+                                "propName": "ContainerStatus",
+                                "template": "{{.State.Status}}"
+                            },
+                            "type": "plugin",
+                            "name": "Get Container Status",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Inspect",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "name": "${environment\/SERVER_HOST}",
+                                "type": "container",
+                                "propName": "containerId",
+                                "template": "{{.Id}}"
+                            },
+                            "type": "plugin",
+                            "name": "Get Container Id",
+                            "children": []
+                        },
+                        {
+                            "propertyName": "remove.container",
+                            "type": "switch",
+                            "name": "Remove Container?",
+                            "children": []
+                        },
+                        {
+                            "propertyName": "pull.image",
+                            "type": "switch",
+                            "name": "Pull Image?",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Shell",
+                            "pluginName": "Shell",
+                            "pluginVersion": 4,
+                            "properties": {
+                                "directoryOffset": ".",
+                                "shellInterpreter": "",
+                                "scriptBody": "docker login ${system\/docker.registry} -u ${system\/docker.username} -p ${system\/docker.password}",
+                                "runAsDaemon": "",
+                                "outputFile": ""
+                            },
+                            "type": "plugin",
+                            "name": "Docker login",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "postProcessingScript": "0fb167d5-bd93-4abc-adae-3ce6643c6ad3",
+                            "commandName": "Inspect",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "name": "${environment\/SERVER_HOST}",
+                                "type": "container",
+                                "propName": "ContainerStatus",
+                                "template": "{{.State.Status}}"
+                            },
+                            "type": "plugin",
+                            "name": "Get Container Status Again",
+                            "children": []
+                        },
+                        {
+                            "propertyName": "Get Container Status Again\/ContainerStatus",
+                            "type": "switch",
+                            "name": "Conatiner Running?",
+                            "children": []
+                        },
+                        {
+                            "status": "SUCCESS",
+                            "type": "setStatus",
+                            "name": "7986-2a1c-4344-fe65",
+                            "children": []
+                        },
+                        {
+                            "status": "FAILURE",
+                            "type": "setStatus",
+                            "name": "b51c-3109-fa16-be92",
+                            "children": []
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "remove-container",
+                "description": "Stops and removes the container",
+                "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                "takesVersion": false,
+                "status": "",
+                "active": true,
+                "deleted": false,
+                "executionTimeout": 0,
+                "propDefs": [{
+                    "name": "stop.timeout",
+                    "label": "Timeout",
+                    "extendedLabel": "Timeout",
+                    "type": "TEXT",
+                    "value": "60",
+                    "required": false,
+                    "description": "Number of seconds to wait before killing the container",
+                    "hidden": false
+                }],
+                "rootActivity": {
+                    "edges": [
+                        {
+                            "to": "Remove Container",
+                            "from": "Is Running?",
+                            "type": "VALUE",
+                            "value": ""
+                        },
+                        {
+                            "to": "Stop Container",
+                            "from": "Is Running?",
+                            "type": "VALUE",
+                            "value": "running"
+                        },
+                        {
+                            "to": "4517afc0c797819fa316e849059e17",
+                            "from": "Remove Container",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Inspect",
+                            "type": "ALWAYS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Is Running?",
+                            "from": "Inspect",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Remove Container",
+                            "from": "Stop Container",
+                            "type": "SUCCESS",
+                            "value": ""
+                        }
+                    ],
+                    "offsets": [
+                        {
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "x": 0,
+                            "y": 726
+                        },
+                        {
+                            "name": "Stop Container",
+                            "x": 136,
+                            "y": 370
+                        },
+                        {
+                            "name": "Remove Container",
+                            "x": -74,
+                            "y": 566
+                        },
+                        {
+                            "name": "Is Running?",
+                            "x": -74,
+                            "y": 250
+                        },
+                        {
+                            "name": "Inspect",
+                            "x": -37.5,
+                            "y": 120
+                        }
+                    ],
+                    "sizes": [
+                        {
+                            "name": "Is Running?",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Remove Container",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Stop Container",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Inspect",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "width": 0,
+                            "height": 0
+                        }
+                    ],
+                    "type": "graph",
+                    "name": "08506f67-c91e-429f-bc29-78551f4f2715",
+                    "children": [
+                        {
+                            "type": "finish",
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "children": []
+                        },
+                        {
+                            "propertyName": "Inspect\/ContainerStatus",
+                            "type": "switch",
+                            "name": "Is Running?",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Stop Container",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "container": "${environment\/SERVER_HOST}",
+                                "timer": "${p:stop.timeout}"
+                            },
+                            "type": "plugin",
+                            "name": "Stop Container",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": true,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "postProcessingScript": "0fb167d5-bd93-4abc-adae-3ce6643c6ad3",
+                            "commandName": "Inspect",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "name": "${environment\/SERVER_HOST}",
+                                "type": "container",
+                                "propName": "ContainerStatus",
+                                "template": "{{.State.Status}}"
+                            },
+                            "type": "plugin",
+                            "name": "Inspect",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Remove Container",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "container": "${environment\/SERVER_HOST}",
+                                "force": "true"
+                            },
+                            "type": "plugin",
+                            "name": "Remove Container",
+                            "children": []
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "restart-container",
+                "description": "Restarts the container (whether its started or not)",
+                "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                "takesVersion": false,
+                "status": "",
+                "active": true,
+                "deleted": false,
+                "executionTimeout": 0,
+                "propDefs": [{
+                    "name": "stop.timeout",
+                    "label": "Timeout",
+                    "extendedLabel": "Timeout",
+                    "type": "TEXT",
+                    "value": "60",
+                    "required": false,
+                    "description": "The number of seconds to wait for before restarting the container",
+                    "hidden": false
+                }],
+                "rootActivity": {
+                    "edges": [
+                        {
+                            "to": "Is Running?",
+                            "from": "Inspect",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "4517afc0c797819fa316e849059e17",
+                            "from": "Start Container",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Restart Container",
+                            "from": "Is Running?",
+                            "type": "VALUE",
+                            "value": "running"
+                        },
+                        {
+                            "to": "Inspect",
+                            "type": "ALWAYS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Start Container",
+                            "from": "Is Running?",
+                            "type": "VALUE",
+                            "value": ""
+                        },
+                        {
+                            "to": "4517afc0c797819fa316e849059e17",
+                            "from": "Restart Container",
+                            "type": "SUCCESS",
+                            "value": ""
+                        }
+                    ],
+                    "offsets": [
+                        {
+                            "name": "Start Container",
+                            "x": -217.5,
+                            "y": 420
+                        },
+                        {
+                            "name": "Inspect",
+                            "x": -37.5,
+                            "y": 110
+                        },
+                        {
+                            "name": "Restart Container",
+                            "x": 131,
+                            "y": 420
+                        },
+                        {
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "x": 0,
+                            "y": 696
+                        },
+                        {
+                            "name": "Is Running?",
+                            "x": -79,
+                            "y": 270
+                        }
+                    ],
+                    "sizes": [
+                        {
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Inspect",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Start Container",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Is Running?",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Restart Container",
+                            "width": 0,
+                            "height": 0
+                        }
+                    ],
+                    "type": "graph",
+                    "name": "0f8d0e2d-342a-4b4c-9e35-d70172fc9141",
+                    "children": [
+                        {
+                            "type": "finish",
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "children": []
+                        },
+                        {
+                            "propertyName": "Inspect\/ContainerStatus",
+                            "type": "switch",
+                            "name": "Is Running?",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "postProcessingScript": "0fb167d5-bd93-4abc-adae-3ce6643c6ad3",
+                            "commandName": "Inspect",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "name": "${environment\/SERVER_HOST}",
+                                "type": "container",
+                                "propName": "ContainerStatus",
+                                "template": "{{.State.Status}}"
+                            },
+                            "type": "plugin",
+                            "name": "Inspect",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Start Container",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "container": "${environment\/SERVER_HOST}",
+                                "attachOutErr": ""
+                            },
+                            "type": "plugin",
+                            "name": "Start Container",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Restart Container",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "container": "${environment\/SERVER_HOST}",
+                                "timer": "${stop.timeout}"
+                            },
+                            "type": "plugin",
+                            "name": "Restart Container",
+                            "children": []
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "stop-container",
+                "description": "Stops the container (whether its started or not)",
+                "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                "takesVersion": false,
+                "status": "",
+                "active": true,
+                "deleted": false,
+                "executionTimeout": 0,
+                "propDefs": [{
+                    "name": "stop.timeout",
+                    "label": "Timeout",
+                    "extendedLabel": "Timeout",
+                    "type": "TEXT",
+                    "value": "60",
+                    "required": false,
+                    "description": "The number of seconds to wait before killing the container",
+                    "hidden": false
+                }],
+                "rootActivity": {
+                    "edges": [
+                        {
+                            "to": "4517afc0c797819fa316e849059e17",
+                            "from": "Stop Container",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Stop Container",
+                            "from": "Is Running?",
+                            "type": "VALUE",
+                            "value": "running"
+                        },
+                        {
+                            "to": "Inspect",
+                            "type": "ALWAYS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Is Running?",
+                            "from": "Inspect",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "4517afc0c797819fa316e849059e17",
+                            "from": "Is Running?",
+                            "type": "VALUE",
+                            "value": ""
+                        }
+                    ],
+                    "offsets": [
+                        {
+                            "name": "Inspect",
+                            "x": -39,
+                            "y": 136
+                        },
+                        {
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "x": -1.5,
+                            "y": 716
+                        },
+                        {
+                            "name": "Stop Container",
+                            "x": 130,
+                            "y": 450
+                        },
+                        {
+                            "name": "Is Running?",
+                            "x": -80.5,
+                            "y": 290
+                        }
+                    ],
+                    "sizes": [
+                        {
+                            "name": "Inspect",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Stop Container",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "Is Running?",
+                            "width": 0,
+                            "height": 0
+                        }
+                    ],
+                    "type": "graph",
+                    "name": "76eb0b5e-2498-48ae-9b88-91b2e5a9c704",
+                    "children": [
+                        {
+                            "type": "finish",
+                            "name": "4517afc0c797819fa316e849059e17",
+                            "children": []
+                        },
+                        {
+                            "propertyName": "Inspect\/ContainerStatus",
+                            "type": "switch",
+                            "name": "Is Running?",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Stop Container",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "container": "${environment\/SERVER_HOST}",
+                                "timer": "${p:stop.timeout}"
+                            },
+                            "type": "plugin",
+                            "name": "Stop Container",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "postProcessingScript": "0fb167d5-bd93-4abc-adae-3ce6643c6ad3",
+                            "commandName": "Inspect",
+                            "pluginName": "Docker",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "name": "${environment\/SERVER_HOST}",
+                                "type": "container",
+                                "propName": "ContainerStatus",
+                                "template": "{{.State.Status}}"
+                            },
+                            "type": "plugin",
+                            "name": "Inspect",
+                            "children": []
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "verify-ui",
+                "description": "Verify that the user interface (if any) is accessible",
+                "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                "takesVersion": false,
+                "status": "",
+                "active": true,
+                "deleted": false,
+                "executionTimeout": 0,
+                "propDefs": [
+                    {
+                        "name": "verification.string",
+                        "label": "Verification String",
+                        "extendedLabel": "Verification String",
+                        "type": "TEXT",
+                        "required": true,
+                        "description": "The string to verify in the HTML web page, e.g. title",
+                        "hidden": false
+                    },
+                    {
+                        "name": "verification.wait",
+                        "label": "Verification Wait Time",
+                        "extendedLabel": "Verification Wait Time",
+                        "type": "TEXT",
+                        "value": "60",
+                        "required": true,
+                        "description": "Maximum wait time (in seconds) to wait for verification string",
+                        "hidden": false
+                    }
+                ],
+                "rootActivity": {
+                    "edges": [
+                        {
+                            "to": "e726-66d9-6d4c-c13d",
+                            "from": "Wait for web page",
+                            "type": "SUCCESS",
+                            "value": ""
+                        },
+                        {
+                            "to": "Wait for web page",
+                            "type": "ALWAYS",
+                            "value": ""
+                        }
+                    ],
+                    "offsets": [
+                        {
+                            "name": "e726-66d9-6d4c-c13d",
+                            "x": -5.5,
+                            "y": 460
+                        },
+                        {
+                            "name": "Wait for web page",
+                            "x": -70.5,
+                            "y": 158
+                        }
+                    ],
+                    "sizes": [
+                        {
+                            "name": "Wait for web page",
+                            "width": 0,
+                            "height": 0
+                        },
+                        {
+                            "name": "e726-66d9-6d4c-c13d",
+                            "width": 0,
+                            "height": 0
+                        }
+                    ],
+                    "type": "graph",
+                    "name": "03ed8ebc-3710-4bb7-bd45-6cb353e1f124",
+                    "children": [
+                        {
+                            "type": "finish",
+                            "name": "e726-66d9-6d4c-c13d",
+                            "children": []
+                        },
+                        {
+                            "allowFailure": false,
+                            "useImpersonation": false,
+                            "showHidden": false,
+                            "impersonationUseSudo": false,
+                            "impersonationUseSsh": false,
+                            "commandName": "Wait for web page",
+                            "pluginName": "Deploy Tools",
+                            "pluginVersion": 5,
+                            "properties": {
+                                "url": "http:\/\/${environment\/primary.ip}:${environment\/SERVER_PORT}",
+                                "verifyString": "${verification.string}",
+                                "failIfFound": "",
+                                "user": "",
+                                "password": "pbe{bmm+dsZgHVfHXS5hBm61ZanEoOHN3Uxt}",
+                                "timeout": "",
+                                "passScript": "",
+                                "maxWaitTime": "${verification.wait}",
+                                "retryTimeout": "5000"
+                            },
+                            "type": "plugin",
+                            "name": "Wait for web page",
+                            "children": []
+                        }
+                    ]
+                }
+            }
+        ],
+        "taskDefs": []
+    },
+    "sourceConfigTypeName": "Jenkins",
+    "envPropDefs": [
+        {
+            "name": "container.links",
+            "label": "Container Links",
+            "extendedLabel": "Container Links",
+            "type": "TEXT",
+            "required": false,
+            "description": "Name of any containers to link to (legacy feature)",
+            "hidden": false
+        },
+        {
+            "name": "SERVER_PORT",
+            "label": "Server Port",
+            "extendedLabel": "Server Port",
+            "type": "TEXT",
+            "value": "8080",
+            "required": true,
+            "description": "The port that the service will run on",
+            "hidden": false
+        },
+        {
+            "name": "EUREKA_HOST",
+            "label": "Eureka Hostname",
+            "extendedLabel": "Eureka Hostname",
+            "type": "TEXT",
+            "value": "eureka-service",
+            "required": true,
+            "description": "The hostname of the (Eureka) registration and discovery server",
+            "hidden": false
+        },
+        {
+            "name": "EUREKA_PORT",
+            "label": "Eureka Port",
+            "extendedLabel": "Eureka Port",
+            "type": "TEXT",
+            "value": "1111",
+            "required": true,
+            "description": "The TCP port of the (Eureka) registration and discovery server",
+            "hidden": false
+        },
+        {
+            "name": "EUREKA_CLIENT_SERVICEURL_DEFAULTZONE",
+            "label": "Eureka URI",
+            "extendedLabel": "Eureka URI",
+            "type": "TEXT",
+            "value": "http:\/\/${environment\/EUREKA_HOST}:${environment\/EUREKA_PORT}\/eureka",
+            "required": true,
+            "description": "The full address of the (Eureka) registration and discovery server",
+            "hidden": false
+        },
+        {
+            "name": "SERVER_HOST",
+            "label": "Server Host",
+            "extendedLabel": "Server Host",
+            "type": "TEXT",
+            "value": "${component.name}",
+            "required": false,
+            "description": "The hostname that the service will run on (used to name the container)",
+            "hidden": false
+        },
+        {
+            "name": "primary.ip",
+            "label": "Server Primary IP",
+            "extendedLabel": "Server Primary IP",
+            "type": "TEXT",
+            "required": false,
+            "description": "Primary IP address of server (retrieved and set using get-server-ip process)",
+            "hidden": false
+        }
+    ],
+    "versionPropDefs": [
+        {
+            "name": "image.id",
+            "label": "Docker Image Id",
+            "extendedLabel": "Docker Image Id",
+            "type": "TEXT",
+            "required": false,
+            "description": "Docker Image Id",
+            "hidden": false
+        },
+        {
+            "name": "build.url",
+            "label": "Build URL",
+            "extendedLabel": "Build URL",
+            "type": "TEXT",
+            "required": false,
+            "description": "The URL to the build in the build tool, i.e. Jenkins that created the component version",
+            "hidden": false
+        },
+        {
+            "name": "issue.ids",
+            "label": "Issue Ids",
+            "extendedLabel": "Issue Ids",
+            "type": "TEXT",
+            "required": false,
+            "description": "Comma separated list of Issue Ids, i.e. JIRA Issues that were recorded against the SCM commit",
+            "hidden": false
+        },
+        {
+            "name": "build.version",
+            "label": "Build Version",
+            "extendedLabel": "Build Version",
+            "type": "TEXT",
+            "value": "1.0",
+            "required": false,
+            "description": "Version number automatically retrieved from build tool, i.e. Maven \"<project.version>\"",
+            "hidden": false
+        },
+        {
+            "name": "build.number",
+            "label": "Build Number",
+            "extendedLabel": "Build Number",
+            "type": "TEXT",
+            "required": false,
+            "description": "The build number in the build tool, i.e. Jenkins that created the component version",
+            "hidden": false
+        },
+        {
+            "name": "scm.id",
+            "label": "SCM Id",
+            "extendedLabel": "SCM Id",
+            "type": "TEXT",
+            "required": false,
+            "description": "The unique id of the SCM changeset, i.e. Git commit hash that created the component version",
+            "hidden": false
+        },
+        {
+            "name": "scm.branch",
+            "label": "SCM Branch",
+            "extendedLabel": "SCM Branch",
+            "type": "TEXT",
+            "required": false,
+            "description": "The SCM branch of the commit that created the component version.",
+            "hidden": false
+        },
+        {
+            "name": "scm.url",
+            "label": "SCM URL",
+            "extendedLabel": "SCM URL",
+            "type": "TEXT",
+            "required": false,
+            "description": "The URL of the SCM repository of the commit that created the component version",
+            "hidden": false
+        },
+        {
+            "name": "docker.image.id",
+            "label": "Docker Image Id",
+            "extendedLabel": "Docker Image Id",
+            "type": "TEXT",
+            "required": false,
+            "description": "The unique id of the docker image that was created from the component verison",
+            "hidden": false
+        }
+    ],
+    "propSheetGroup": {"propSheets": [
+        {
+            "name": "custom",
+            "properties": []
+        },
+        {
+            "name": "code_station",
+            "properties": [{
+                "name": "repository",
+                "value": "e44a0e51-a541-4273-9a52-58fc5ab57173",
+                "description": "",
+                "secure": false
+            }]
+        },
+        {
+            "name": "JenkinsComponentProperties",
+            "properties": [
+                {
+                    "name": "pollingPeriod",
+                    "description": "",
+                    "secure": false
+                },
+                {
+                    "name": "quietPeriod",
+                    "description": "",
+                    "secure": false
+                }
+            ]
+        },
+        {
+            "name": "template",
+            "properties": []
+        }
+    ]},
+    "processes": [],
+    "taskDefs": [],
+    "configTemplates": [{
+        "name": "docker-compose.yml",
+        "active": true,
+        "data": "version: \"3\"\nservices:\n  eureka-service:\n    image: eureka-service:latest\n    environment:\n        EUREKA_HOST: ${EUREKA_HOST}\n        EUREKA_PORT: ${EUREKA_PORT}\n        HTTP_PORT: 1111\n    restart: always\n    ports:\n     - \"${EUREKA_PORT}:1111\"\n \n  users-service:\n    image: users-service:latest\n    environment:\n        EUREKA_HOST: ${EUREKA_HOST}\n        EUREKA_PORT: ${EUREKA_PORT}\n        HTTP_PORT: 2221\n    restart: always\n    ports:\n     - \"${USERS_SERVICE_PORT}:2221\"\n    links:\n     - ${EUREKA_HOST}\n\n  locations-service:\n    image: locations-service:latest\n    environment:\n        EUREKA_HOST: ${EUREKA_HOST}\n        EUREKA_PORT: ${EUREKA_PORT}\n        HTTP_PORT: 3331\n    restart: always\n    ports:\n     - \"${LOCATIONS_SERVICE_PORT}:3331\"\n    links:\n     - ${EUREKA_HOST}\n\n  web-ui:\n    image: web-ui:latest\n    environment:\n        EUREKA_HOST: ${EUREKA_HOST}\n        EUREKA_PORT: ${EUREKA_PORT}\n        HTTP_PORT: 8881\n    restart: always\n    links:\n     - ${EUREKA_HOST}\n     - users-service\n     - locations-service\n    ports:\n     - \"${WEB_UI_PORT}:8881\""
+    }],
+    "templateVersion": -1,
+    "usingLatestProperties": false
+}

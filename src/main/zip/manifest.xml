@@ -18,5 +18,20 @@
                 Installing this plugin will give you access to tasks for integrating with Docker Compose.
             </releaseNote>
         </version>
+        <version name="6">
+            <releaseNote>
+                Major refactoring and fixes.
+            </releaseNote>
+        </version>
+        <version name="7">
+            <releaseNote>
+                Updated generic command.
+            </releaseNote>
+        </version>
+        <version name="8">
+            <releaseNote>
+                Added registry server to compose overrides.
+            </releaseNote>
+        </version>
     </versions>
 </pluginInfo>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1">
     <header>
-        <identifier id="com.serena.air.plugin.DockerCompose" name="Docker Compose" version="5"/>
+        <identifier id="com.serena.air.plugin.DockerCompose" name="Docker Compose" version="8"/>
         <description>
             Provides tasks to interact with Docker Compose.
         </description>
@@ -9,16 +9,18 @@
     </header>
 
     <step-type name="Docker Compose Up">
-        <description>This step starts all of the applications services that are defined in compose file(s)
-            (docker-composer up). It checks what services are defined in the provided compose files and adds any
+        <description>
+            This step starts all of the applications services that are defined in compose file(s).
+            It checks what services are defined in the provided compose files and adds any
             compose override files that exist for DA components of the same name.
         </description>
         <properties>
             <property name="composeFiles">
                 <property-ui type="textAreaBox"
+                             default-value="docker-compose.yml"
                              label="Compose Files"
-                             description="A list of paths to Compose YAML files, separated by newline characters.
-                                The default Compose file is docker-compose.yml."/>
+                             description="A list of paths to compose YAML files, separated by newline characters.
+                                The default compose file is docker-compose.yml."/>
             </property>
             <property name="composeProjectName">
                 <property-ui type="textBox"
@@ -33,14 +35,21 @@
             <property name="scriptPaths">
                 <property-ui type="textBox"
                              label="Environment Script Paths"
-                             description="Specify the paths to shell scripts to run before the Docker Compose command runs.
+                             description="Specify the paths to shell scripts to run before the compose command runs.
                                 This property is utilized only on *nix machines."/>
             </property>
             <property name="commandPath" required="false">
-                <property-ui type="textBox" hidden="true"
+                <property-ui type="textBox"
+                             hidden="true"
                              label="Compose Path"
                              description="The name of the docker-compose command if it is in the system path,
                                 or the full path to run the docker-compose command."/>
+            </property>
+            <property name="runDetached">
+                <property-ui type="checkBox" label="Run Detached"
+                             hidden="true"
+                             default-value="true"
+                             description="Unselect this option to run in the foreground."/>
             </property>
             <property name="envPropValues">
                 <property-ui type="textAreaBox"
@@ -53,16 +62,15 @@
             </property>
             <property name="saveScript">
                 <property-ui type="checkBox"
-                             label="Do Not Delete Script" hidden="true"
+                             label="Do Not Delete Script"
+                             hidden="true"
                              description="Select to save the plugin's generated executable script to analyze and run manually later."
                              default-value="false"/>
             </property>
-            <property name="verbose" required="false">
-                <property-ui type="checkBox" label="Verbose Output" hidden="true"
-                             description="Select this option to display verbose output during execution."/>
-            </property>
             <property name="debug" required="false">
-                <property-ui type="checkBox" label="Debug Output" hidden="true"
+                <property-ui type="checkBox"
+                             label="Debug Output"
+                             hidden="true"
                              description="Select this option to display debug output during execution."/>
             </property>
         </properties>
@@ -85,12 +93,15 @@
     </step-type>
 
     <step-type name="Docker Compose Down">
-        <description>This step stops all of the applications services that are defined in a compose file.</description>
+        <description>
+            This step stops all of the applications services that are defined in compose file(s).
+        </description>
         <properties>
             <property name="composeFiles">
                 <property-ui type="textAreaBox"
+                             default-value="docker-compose.yml"
                              label="Compose Files"
-                             description="A list of paths to Compose YAML files, separated by newline characters.
+                             description="A list of paths to compose YAML files, separated by newline characters.
                                 The default Compose file is docker-compose.yml."/>
             </property>
             <property name="composeProjectName">
@@ -106,7 +117,7 @@
             <property name="scriptPaths">
                 <property-ui type="textBox"
                              label="Environment Script Paths"
-                             description="Specify the paths to shell scripts to run before the Docker Compose command runs.
+                             description="Specify the paths to shell scripts to run before the compose command runs.
                                 This property is utilized only on *nix machines."/>
             </property>
             <property name="commandPath" required="false">
@@ -126,16 +137,14 @@
             </property>
             <property name="saveScript">
                 <property-ui type="checkBox"
-                             label="Do Not Delete Script" hidden="true"
+                             label="Do Not Delete Script"
+                             hidden="true"
                              description="Select to save the plugin's generated executable script to analyze and run manually later."
                              default-value="false"/>
             </property>
-            <property name="verbose" required="false">
-                <property-ui type="checkBox" label="Verbose Output" hidden="true"
-                             description="Select this option to display verbose output during execution."/>
-            </property>
             <property name="debug" required="false">
-                <property-ui type="checkBox" label="Debug Output" hidden="true"
+                <property-ui type="checkBox" label="Debug Output"
+                             hidden="true"
                              description="Select this option to display debug output during execution."/>
             </property>
         </properties>
@@ -158,14 +167,15 @@
     </step-type>
 
     <step-type name="Docker Compose Config">
-        <description>This step validates of the applications services that are defined in compose file(s)
-            (docker-composer config).
+        <description>
+            This step validates all of the applications services that are defined in compose file(s).
         </description>
         <properties>
             <property name="composeFiles">
                 <property-ui type="textAreaBox"
+                             default-value="docker-compose.yml"
                              label="Compose Files"
-                             description="A list of paths to Compose YAML files, separated by newline characters.
+                             description="A list of paths to compose YAML files, separated by newline characters.
                                 The default Compose file is docker-compose.yml."/>
             </property>
             <property name="composeProjectName">
@@ -189,27 +199,28 @@
             </property>
             <property name="outputFile">
                 <property-ui type="textBox"
-                             label="Output File" default-value="docker-compose-all.yml"
+                             label="Output File"
+                             default-value="docker-compose-all.yml"
                              description="Write the validated config to the given file."/>
             </property>
             <property name="commandPath" required="false">
-                <property-ui type="textBox" hidden="true"
+                <property-ui type="textBox"
+                             hidden="true"
                              label="Compose Path"
                              description="The name of the docker-compose command if it is in the system path,
                                 or the full path to run the docker-compose command."/>
             </property>
             <property name="saveScript">
                 <property-ui type="checkBox"
-                             label="Do Not Delete Script" hidden="true"
+                             label="Do Not Delete Script"
+                             hidden="true"
                              description="Select to save the plugin's generated executable script to analyze and run manually later."
                              default-value="false"/>
             </property>
-            <property name="verbose" required="false">
-                <property-ui type="checkBox" label="Verbose Output" hidden="true"
-                             description="Select this option to display verbose output during execution."/>
-            </property>
             <property name="debug" required="false">
-                <property-ui type="checkBox" label="Debug Output" hidden="true"
+                <property-ui type="checkBox"
+                             label="Debug Output"
+                             hidden="true"
                              description="Select this option to display debug output during execution."/>
             </property>
         </properties>
@@ -232,13 +243,16 @@
     </step-type>
 
     <step-type name="Docker Compose (Generic)">
-        <description>This step runs a generic docker compose command.</description>
+        <description>
+            This step runs a generic docker compose command.
+        </description>
         <properties>
             <property name="composeFiles">
                 <property-ui type="textAreaBox"
+                             default-value="docker-compose.yml"
                              label="Compose Files"
-                             description="A list of paths to Compose YAML files, separated by newline characters.
-                                The default Compose file is docker-compose.yml."/>
+                             description="A list of paths to compose YAML files, separated by newline characters.
+                                The default compose file is docker-compose.yml."/>
             </property>
             <property name="composeProjectName">
                 <property-ui type="textBox"
@@ -249,34 +263,36 @@
                 <property-ui type="selectBox"
                              label="Compose Command"
                              description="Select the docker-compose command to run."/>
-                <value label="build">build</value>
-                <value label="bundle">bundle</value>
-                <value label="config">config</value>
-                <value label="create">create</value>
-                <value label="down">down</value>
-                <value label="events">events</value>
-                <value label="exec">exec</value>
-                <value label="help">help</value>
-                <value label="kill">kill</value>
-                <value label="logs">logs</value>
-                <value label="pause">pause</value>
-                <value label="port">port</value>
-                <value label="ps">ps</value>
-                <value label="pull">pull</value>
-                <value label="push">push</value>
-                <value label="restart">restart</value>
-                <value label="rm">rm</value>
-                <value label="run">run</value>
-                <value label="scale">scale</value>
-                <value label="start">start</value>
-                <value label="stop">stop</value>
-                <value label="unpause">unpause</value>
-                <value label="up">up</value>
+                    <value label="build">build</value>
+                    <value label="bundle">bundle</value>
+                    <value label="config">config</value>
+                    <value label="create">create</value>
+                    <value label="down">down</value>
+                    <value label="events">events</value>
+                    <value label="exec">exec</value>
+                    <value label="help">help</value>
+                    <value label="kill">kill</value>
+                    <value label="logs">logs</value>
+                    <value label="pause">pause</value>
+                    <value label="port">port</value>
+                    <value label="ps">ps</value>
+                    <value label="pull">pull</value>
+                    <value label="push">push</value>
+                    <value label="restart">restart</value>
+                    <value label="rm">rm</value>
+                    <value label="run">run</value>
+                    <value label="scale">scale</value>
+                    <value label="start">start</value>
+                    <value label="stop">stop</value>
+                    <value label="top">top</value>
+                    <value label="unpause">unpause</value>
+                    <value label="up">up</value>
+                    <value label="version">version</value>
             </property>
             <property name="composeOptions">
                 <property-ui type="textBox"
                              label="Additional Options"
-                             description="Specify additional command-line options for the docker-compose generic command."/>
+                             description="Specify additional command-line options for the docker-compose command."/>
             </property>
             <property name="scriptPaths">
                 <property-ui type="textBox"
@@ -285,7 +301,8 @@
                                 This property is utilized only on *nix machines."/>
             </property>
             <property name="commandPath" required="false">
-                <property-ui type="textBox" hidden="true"
+                <property-ui type="textBox"
+                             hidden="true"
                              label="Compose Path"
                              description="The name of the docker-compose command if it is in the system path,
                                 or the full path to run the docker-compose command."/>
@@ -301,16 +318,15 @@
             </property>
             <property name="saveScript">
                 <property-ui type="checkBox"
-                             label="Do Not Delete Script" hidden="true"
+                             label="Do Not Delete Script"
+                             hidden="true"
                              description="Select to save the plugin's generated executable script to analyze and run manually later."
                              default-value="false"/>
             </property>
-            <property name="verbose" required="false">
-                <property-ui type="checkBox" label="Verbose Output" hidden="true"
-                             description="Select this option to display verbose output during execution."/>
-            </property>
             <property name="debug" required="false">
-                <property-ui type="checkBox" label="Debug Output" hidden="true"
+                <property-ui type="checkBox"
+                             label="Debug Output"
+                             hidden="true"
                              description="Select this option to display debug output during execution."/>
             </property>
         </properties>
@@ -333,16 +349,22 @@
     </step-type>
 
     <step-type name="Create Compose Overrides">
-        <description>This step create a compose override file for the specific component and version. The override
-            file will contain the name of image (from the component) and version (from the component version).
+        <description>
+            This step create a compose override file for the specific component and version. The override
+            file will contain the name of the image (from the component) and version (from the component version).
         </description>
         <properties>
             <property name="composeFile">
                 <property-ui type="textBox"
                              label="Compose File"
                              description="The name of the compose override file to create.
-                                The default Compose file is \$\{component.name\}-overrides.yml."
+                                The default compose file is \$\{component.name\}-overrides.yml."
                              default-value="${p:component.name}-overrides.yaml"/>
+            </property>
+            <property name="registryServer">
+                <property-ui type="textBox"
+                             label="Registry Server"
+                             hidden="true"/>
             </property>
             <property name="componentName">
                 <property-ui type="textBox"
@@ -356,12 +378,10 @@
                              hidden="true"
                              default-value="${p:version.name}"/>
             </property>
-            <property name="verbose" required="false">
-                <property-ui type="checkBox" label="Verbose Output" hidden="true"
-                             description="Select this option to display verbose output during execution."/>
-            </property>
             <property name="debug" required="false">
-                <property-ui type="checkBox" label="Debug Output" hidden="true"
+                <property-ui type="checkBox"
+                             label="Debug Output"
+                             hidden="true"
                              description="Select this option to display debug output during execution."/>
             </property>
         </properties>
@@ -385,13 +405,16 @@
     </step-type>
 
     <step-type name="List Services">
-        <description>This step lists the services defined in a docker-compose file for selection and use in other steps.</description>
+        <description>
+            This step lists the services defined in a docker-compose file for selection and use in other steps.
+        </description>
         <properties>
             <property name="composeFiles">
                 <property-ui type="textAreaBox"
+                             default-value="docker-compose.yml"
                              label="Compose Files"
-                             description="A list of paths to Compose YAML files, separated by newline characters.
-                                The default Compose file is docker-compose.yml."/>
+                             description="A list of paths to compose YAML files, separated by newline characters.
+                                The default compose file is docker-compose.yml."/>
             </property>
             <property name="composeProjectName">
                 <property-ui type="textBox"
@@ -399,19 +422,21 @@
                              description="Specify an alternate project name. By default, the project name is the directory name."/>
             </property>
             <property name="userInterventionRequired">
-                <property-ui type="checkBox" label="Display Results Selection Dialog" default-value="true"
+                <property-ui type="checkBox"
+                             label="Display Results Selection Dialog"
+                             default-value="true"
                              description="Controls whether the information should be displayed"/>
             </property>
             <property name="keyColumnName">
-                <property-ui default-value="Name" description="Column name to be used for selection" hidden="true"
+                <property-ui default-value="Name"
+                             description="Column name to be used for selection"
+                             hidden="true"
                              label="Key column Name for Selection" type="textBox"/>
             </property>
-            <property name="verbose" required="false">
-                <property-ui type="checkBox" label="Verbose Output" hidden="true"
-                             description="Select this option to display verbose output during execution."/>
-            </property>
             <property name="debug" required="false">
-                <property-ui type="checkBox" label="Debug Output" hidden="true"
+                <property-ui type="checkBox"
+                             label="Debug Output"
+                             hidden="true"
                              description="Select this option to display debug output during execution."/>
             </property>
         </properties>
@@ -435,13 +460,15 @@
 
 
     <step-type name="Get Logs">
-        <description>This step retrieves the logs for a specified service in a docker-compose file.</description>
+        <description>
+            This step retrieves the logs for a specified service in a docker-compose file.
+        </description>
         <properties>
             <property name="composeFiles">
-                <property-ui type="textAreaBox"
+                <property-ui type="textAreaBox" default-value="docker-compose.yml"
                              label="Compose Files"
-                             description="A list of paths to Compose YAML files, separated by newline characters.
-                                The default Compose file is docker-compose.yml."/>
+                             description="A list of paths to compose YAML files, separated by newline characters.
+                                The default compose file is docker-compose.yml."/>
             </property>
             <property name="composeProjectName">
                 <property-ui type="textBox"
@@ -449,12 +476,15 @@
                              description="Specify an alternate project name. By default, the project name is the directory name."/>
             </property>
             <property name="serviceName" required="true">
-                <property-ui type="textBox" label="Service Name" default-value="${p:prevStep/UIP}"
-                             description="The service name can be passed from a previous List Services step or you can enter a service name."/>
+                <property-ui type="textBox"
+                             label="Service Name"
+                             default-value="${p:prevStep/UIP}"
+                             description="The service name can be passed from a previous 'List Services' step or you can enter a service name."/>
             </property>
             <property name="outputFile">
                 <property-ui type="textBox"
-                             label="Output File" default-value="${p:prevStep/UIP}-log.txt"
+                             label="Output File"
+                             default-value="${p:prevStep/UIP}-log.txt"
                              description="Write the log to the given file."/>
             </property>
             <property name="composeOptions">
@@ -472,25 +502,28 @@
                              default-value="${p:environment/allProperties}"/>
             </property>
             <property name="showTimestamps" required="false">
-                <property-ui type="checkBox" label="Show Timestamps" default-value="false"
+                <property-ui type="checkBox"
+                             label="Show Timestamps"
+                             default-value="false"
                              description="Show timestamps in the log."/>
             </property>
             <property name="logLines" required="false">
-                <property-ui type="textBox" label="Number of lines" default-value="all"
+                <property-ui type="textBox"
+                             label="Number of lines"
+                             default-value="-1"
                              description="Number of lines to show from the end of the logs for each container."/>
             </property>
             <property name="commandPath" required="false">
-                <property-ui type="textBox" hidden="true"
+                <property-ui type="textBox"
+                             hidden="true"
                              label="Compose Path"
                              description="The name of the docker-compose command if it is in the system path,
                                 or the full path to run the docker-compose command."/>
             </property>
-            <property name="verbose" required="false">
-                <property-ui type="checkBox" label="Verbose Output" hidden="true"
-                             description="Select this option to display verbose output during execution."/>
-            </property>
             <property name="debug" required="false">
-                <property-ui type="checkBox" label="Debug Output" hidden="true"
+                <property-ui type="checkBox"
+                             label="Debug Output"
+                             hidden="true"
                              description="Select this option to display debug output during execution."/>
             </property>
         </properties>

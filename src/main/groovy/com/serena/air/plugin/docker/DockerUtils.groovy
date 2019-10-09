@@ -149,7 +149,7 @@ public class DockerUtils {
             result = "\"" + result + "\""
         }
 
-        DockerUtils.info("Using ${executable} executable: ${result}")
+        println "Using ${executable} executable: ${result}"
         return result
     }
 
@@ -168,14 +168,14 @@ public class DockerUtils {
     // ----------------------------------------
 
     public static debug(String message) {
-        println("[DEBUG] ${message}")
+        println("DEBUG - ${message}")
     }
 
     public static info(String message) {
-        println("[INFO] ${message}")
+        println("INFO - ${message}")
     }
 
     public static error(String message) {
-        println("[ERROR] ${message}")
+        println("ERROR - ${message}")
     }
 }
