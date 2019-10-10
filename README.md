@@ -1,6 +1,6 @@
 # Docker Compose plugin
 
-The _Docker Compose_ plugin is a configuration management plugin. It is run during development and deployment process 
+The _Docker Compose_ plugin is a configuration management plugin. It is run during the development and deployment process 
 to orchestrate the creation and management of Docker containers through compose files. It interacts directly with the
 [docker compose](https://docs.docker.com/compose/) program and parses compose files.
 
